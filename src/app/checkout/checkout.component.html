@@ -1,0 +1,55 @@
+<div class="checkout-container">
+    <mat-card>
+        <mat-horizontal-stepper [linear]="true" #stepper>
+            <mat-step [stepControl]="cartFormGroup">
+                <form [formGroup]="cartFormGroup">
+                    <ng-template matStepLabel>Warenkorb</ng-template>
+
+                    <div>
+                        <button mat-button matStepperNext>Weiter</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="billingAddressFormGroup">
+                <form [formGroup]="billingAddressFormGroup">
+                    <ng-template matStepLabel>Rechnungsadresse</ng-template>
+
+                    <div>
+                        <button mat-button matStepperPrevious>Zurück</button>
+                        <button mat-button matStepperNext>Weiter</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="shippingDataFormGroup">
+                <form [formGroup]="shippingDataFormGroup">
+                    <ng-template matStepLabel>Lieferdaten</ng-template>
+
+                    <div>
+                        <button mat-button matStepperPrevious>Zurück</button>
+                        <button mat-button matStepperNext>Weiter</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="paymentFormGroup">
+                <form [formGroup]="paymentFormGroup">
+                    <ng-template matStepLabel>Zahlungsdaten</ng-template>
+
+                    <div>
+                        <button mat-button matStepperPrevious>Zurück</button>
+                        <button mat-button matStepperNext>Weiter</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="finalizeFormGroup">
+                <form [formGroup]="finalizeFormGroup">
+                    <ng-template matStepLabel>Bestellung abschließen</ng-template>
+
+                    <div>
+                        <button mat-button matStepperPrevious>Zurück</button>
+                        <button mat-button matStepperNext>Kostenpflichtig bestellen</button>
+                    </div>
+                </form>
+            </mat-step>
+        </mat-horizontal-stepper>
+    </mat-card>
+</div>
