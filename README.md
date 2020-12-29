@@ -1,4 +1,8 @@
-# BachelorarbeitDemoanwendung
+# Demoanwendung
+
+ - Ausarbeitung: https://github.com/JapuDCret/bachelorarbeit
+
+# Angular Generated Info
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.1.
 
