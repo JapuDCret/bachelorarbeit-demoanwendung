@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
@@ -27,6 +28,7 @@ import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.compo
     AppRoutingModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    MatButtonModule,
     MatCardModule,
     MatStepperModule,
     MatTableModule,

@@ -26,11 +26,11 @@
       <th mat-header-cell *matHeaderCellDef>Price</th>
       <td mat-cell *matCellDef="let row">
         <div *ngIf="(row.amount === 1); then thenBlock else elseBlock"></div>
-        <ng-template #thenBlock>{{row.price}} €</ng-template>
-        <ng-template #elseBlock>{{row.price * row.amount}} € (each {{row.price}} €)</ng-template>
+        <ng-template #thenBlock>{{row.price | number:'1.2'}} €</ng-template>
+        <ng-template #elseBlock>{{(row.price * row.amount) | number:'1.2'}} € (each {{row.price | number:'1.2'}} €)</ng-template>
       </td>
       <td mat-footer-cell *matFooterCellDef>
-        <ng-container  *ngIf="(totalSum$ | async) || ''; let totalSum">{{totalSum}} €</ng-container>
+        <ng-container *ngIf="(totalSum$ | async); let totalSum">{{totalSum | number:'1.2'}} €</ng-container>
       </td>
     </ng-container>
 

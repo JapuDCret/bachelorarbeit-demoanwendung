@@ -2,7 +2,7 @@
     <mat-card>
         <mat-horizontal-stepper [linear]="true" #stepper>
             <mat-step [stepControl]="cartFormGroup">
-                <form [formGroup]="cartFormGroup">
+                <form [formGroup]="cartFormGroup" class="stepContent">
                     <ng-template matStepLabel>Warenkorb</ng-template>
 
                     <div>
@@ -10,47 +10,46 @@
                     </div>
 
                     <div>
-                        <button mat-button matStepperNext>Weiter</button>
+                        <button mat-raised-button matStepperNext color="primary">Weiter</button>
                     </div>
                 </form>
             </mat-step>
             <mat-step [stepControl]="billingAddressFormGroup">
-                <form [formGroup]="billingAddressFormGroup">
+                <form [formGroup]="billingAddressFormGroup" class="stepContent">
                     <ng-template matStepLabel>Rechnungsadresse</ng-template>
 
                     <div>
-                        <button mat-button matStepperPrevious>Zurück</button>
-                        <button mat-button matStepperNext>Weiter</button>
+                        <button mat-raised-button matStepperPrevious color="accent">Zurück</button>
+                        <button mat-raised-button matStepperNext color="primary">Weiter</button>
                     </div>
                 </form>
             </mat-step>
             <mat-step [stepControl]="shippingDataFormGroup">
-                <form [formGroup]="shippingDataFormGroup">
+                <form [formGroup]="shippingDataFormGroup" class="stepContent">
                     <ng-template matStepLabel>Lieferdaten</ng-template>
 
                     <div>
-                        <button mat-button matStepperPrevious>Zurück</button>
-                        <button mat-button matStepperNext>Weiter</button>
+                        <button mat-raised-button matStepperPrevious color="accent">Zurück</button>
+                        <button mat-raised-button matStepperNext color="primary">Weiter</button>
                     </div>
                 </form>
             </mat-step>
             <mat-step [stepControl]="paymentFormGroup">
-                <form [formGroup]="paymentFormGroup">
+                <form [formGroup]="paymentFormGroup" class="stepContent">
                     <ng-template matStepLabel>Zahlungsdaten</ng-template>
 
                     <div>
-                        <button mat-button matStepperPrevious>Zurück</button>
-                        <button mat-button matStepperNext>Weiter</button>
+                        <button mat-raised-button matStepperPrevious color="accent">Zurück</button>
+                        <button mat-raised-button matStepperNext color="primary">Weiter</button>
                     </div>
                 </form>
             </mat-step>
             <mat-step [stepControl]="finalizeFormGroup">
-                <form [formGroup]="finalizeFormGroup">
+                <form [formGroup]="finalizeFormGroup" class="stepContent">
                     <ng-template matStepLabel>Bestellung abschließen</ng-template>
 
                     <div>
-                        <button mat-button matStepperPrevious>Zurück</button>
-                        <button mat-button matStepperNext>Kostenpflichtig bestellen</button>
+                        <button mat-raised-button matStepperNext color="primary">Kostenpflichtig bestellen</button>
                     </div>
                 </form>
             </mat-step>
