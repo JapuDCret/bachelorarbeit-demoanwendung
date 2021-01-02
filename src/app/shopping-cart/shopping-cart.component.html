@@ -1,0 +1,41 @@
+<div class="mat-elevation-z8">
+  <table mat-table class="full-width-table" aria-label="Elements">
+    <!-- ImagePath Column -->
+    <ng-container matColumnDef="imagePath">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let row"><img height="32px" src="{{row.imagePath}}" /></td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Amount Column -->
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef>Amount</th>
+      <td mat-cell *matCellDef="let row">{{row.amount}}</td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let row">{{row.name}}</td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Price Column -->
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef>Price</th>
+      <td mat-cell *matCellDef="let row">
+        <div *ngIf="(row.amount === 1); then thenBlock else elseBlock"></div>
+        <ng-template #thenBlock>{{row.price}} €</ng-template>
+        <ng-template #elseBlock>{{row.price * row.amount}} € (each {{row.price}} €)</ng-template>
+      </td>
+      <td mat-footer-cell *matFooterCellDef>
+        <ng-container  *ngIf="(totalSum$ | async) || ''; let totalSum">{{totalSum}} €</ng-container>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+  </table>
+</div>
