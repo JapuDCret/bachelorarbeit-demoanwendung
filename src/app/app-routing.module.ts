@@ -4,8 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { CheckoutComponent } from 'src/app/checkout/checkout.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/cart', pathMatch: 'full' },
-  { path: 'cart', pathMatch: 'prefix', component: CheckoutComponent }
+  { path: '', redirectTo: '/checkout', pathMatch: 'full' },
+  { path: 'checkout', pathMatch: 'prefix', component: CheckoutComponent }
 ];
 
 @NgModule({

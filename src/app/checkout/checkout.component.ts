@@ -10,8 +10,8 @@ export class CheckoutComponent implements OnInit {
   cartFormGroup: FormGroup;
   billingAddressFormGroup: FormGroup;
   shippingDataFormGroup: FormGroup;
-  paymentFormGroup: FormGroup;
-  finalizeFormGroup: FormGroup;
+  paymentDataFormGroup: FormGroup;
+  finalizeCheckoutFormGroup: FormGroup;
 
   constructor(private _formBuilder: FormBuilder) { }
 
@@ -19,8 +19,8 @@ export class CheckoutComponent implements OnInit {
     this.cartFormGroup = this._formBuilder.group({});
     this.billingAddressFormGroup = this._formBuilder.group({});
     this.shippingDataFormGroup = this._formBuilder.group({});
-    this.paymentFormGroup = this._formBuilder.group({});
-    this.finalizeFormGroup = this._formBuilder.group({});
+    this.paymentDataFormGroup = this._formBuilder.group({});
+    this.finalizeCheckoutFormGroup = this._formBuilder.group({});
   }
 
 }
