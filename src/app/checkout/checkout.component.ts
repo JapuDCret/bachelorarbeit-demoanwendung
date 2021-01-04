@@ -13,14 +13,14 @@ export class CheckoutComponent implements OnInit {
   paymentDataFormGroup: FormGroup;
   finalizeCheckoutFormGroup: FormGroup;
 
-  constructor(private _formBuilder: FormBuilder) { }
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.cartFormGroup = this._formBuilder.group({});
-    this.billingAddressFormGroup = this._formBuilder.group({});
-    this.shippingDataFormGroup = this._formBuilder.group({});
-    this.paymentDataFormGroup = this._formBuilder.group({});
-    this.finalizeCheckoutFormGroup = this._formBuilder.group({});
+    this.cartFormGroup = this.fb.group({});
+    this.billingAddressFormGroup = this.fb.group({});
+    this.shippingDataFormGroup = this.fb.group({});
+    this.paymentDataFormGroup = this.fb.group({});
+    this.finalizeCheckoutFormGroup = this.fb.group({});
   }
 
 }

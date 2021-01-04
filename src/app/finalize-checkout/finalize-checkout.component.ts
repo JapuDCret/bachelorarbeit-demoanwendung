@@ -1,15 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-finalize-checkout',
   templateUrl: './finalize-checkout.component.html',
   styleUrls: ['./finalize-checkout.component.css']
 })
-export class FinalizeCheckoutComponent implements OnInit {
+export class FinalizeCheckoutComponent {
+  finalizeCheckoutFormGroup = this.fb.group({
+  });
 
-  constructor() { }
+  @Input('stepper') stepper: MatStepper;
 
-  ngOnInit(): void {
+  constructor(private fb: FormBuilder) {}
+
+  goBack(): void {
+    console.log('goBack()');
+
+    this.stepper.previous();
   }
 
+  goForward(): void {
+    console.log('goForward()');
+
+    if(this.finalizeCheckoutFormGroup.valid) {
+      console.log('goForward(): calling submit()');
+      this.submit();
+    }
+  }
+
+  private submit(): void {
+    console.log('onSubmit()');
+
+    // TODO: submit data
+    
+    window.setTimeout(() => {
+      this.stepper.next();
+    }, 2500)
+  }
 }

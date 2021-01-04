@@ -44,16 +44,16 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
     const randData = new Array<ShoppingCartItem>();
 
     const numOfItems = getRndInteger(3, 5);
-    for(var i = 0; i < numOfItems; i++) {
-      var randItemId;
+    for (let i = 0; i < numOfItems; i++) {
+      let randItemId;
       do {
         randItemId = getRndInteger(0, 8);
-      } while(randData.find((shopItem) => {
+      } while (randData.find((shopItem) => {
         return shopItem.itemId === randItemId;
       }) != undefined);
-      
+
       const randAmount = getRndInteger(1, 3);
-      
+
       randData.push({
         ...PRICE_TABLE[randItemId],
         itemId: randItemId,

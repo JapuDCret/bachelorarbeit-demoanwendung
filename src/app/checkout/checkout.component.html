@@ -1,74 +1,39 @@
 <div class="checkout-container">
     <mat-card>
-        <mat-horizontal-stepper [linear]="true" #stepper>
-            <mat-step [stepControl]="cartFormGroup">
-                <form [formGroup]="cartFormGroup" class="stepContent">
+        <mat-card-content>
+            <mat-horizontal-stepper [linear]="true" #stepper>
+                <mat-step [stepControl]="step1.cartFormGroup">
                     <ng-template matStepLabel>Warenkorb</ng-template>
-
-                    <div>
-                        <app-shopping-cart></app-shopping-cart>
-                    </div>
-
-                    <div>
-                        <button mat-raised-button matStepperNext color="primary">Weiter</button>
-                    </div>
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="billingAddressFormGroup">
-                <form [formGroup]="billingAddressFormGroup" class="stepContent">
+                    
+                    <app-shopping-cart #step1 [stepper]="stepper"></app-shopping-cart>
+                </mat-step>
+                <mat-step [stepControl]="step2.billingAddressFormGroup">
                     <ng-template matStepLabel>Rechnungsadresse</ng-template>
-
-                    <div>
-                        <app-billing-address></app-billing-address>
-                    </div>
-
-                    <div>
-                        <button mat-raised-button matStepperPrevious color="accent">Zurück</button>
-                        <button mat-raised-button matStepperNext color="primary">Weiter</button>
-                    </div>
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="shippingDataFormGroup">
-                <form [formGroup]="shippingDataFormGroup" class="stepContent">
+                    
+                    <app-billing-address #step2 [stepper]="stepper"></app-billing-address>
+                </mat-step>
+                <mat-step [stepControl]="step3.shippingDataFormGroup">
                     <ng-template matStepLabel>Lieferdaten</ng-template>
-
-                    <div>
-                        <app-shipping-data></app-shipping-data>
-                    </div>
-
-                    <div>
-                        <button mat-raised-button matStepperPrevious color="accent">Zurück</button>
-                        <button mat-raised-button matStepperNext color="primary">Weiter</button>
-                    </div>
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="paymentDataFormGroup">
-                <form [formGroup]="paymentDataFormGroup" class="stepContent">
+                    
+                    <app-shipping-data #step3 [stepper]="stepper"></app-shipping-data>
+                </mat-step>
+                <mat-step [stepControl]="step4.paymentDataFormGroup">
                     <ng-template matStepLabel>Zahlungsdaten</ng-template>
-
-                    <div>
-                        <app-payment-data></app-payment-data>
-                    </div>
-
-                    <div>
-                        <button mat-raised-button matStepperPrevious color="accent">Zurück</button>
-                        <button mat-raised-button matStepperNext color="primary">Weiter</button>
-                    </div>
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="finalizeCheckoutFormGroup">
-                <form [formGroup]="finalizeCheckoutFormGroup" class="stepContent">
+                    
+                    <app-payment-data #step4 [stepper]="stepper"></app-payment-data>
+                </mat-step>
+                <mat-step [stepControl]="step5.finalizeCheckoutFormGroup">
                     <ng-template matStepLabel>Bestellung abschließen</ng-template>
-
-                    <div>
-                        <app-finalize-checkout></app-finalize-checkout>
-                    </div>
-
-                    <div>
-                        <button mat-raised-button matStepperNext color="primary">Kostenpflichtig bestellen</button>
-                    </div>
-                </form>
-            </mat-step>
-        </mat-horizontal-stepper>
+                    
+                    <app-finalize-checkout #step5 [stepper]="stepper"></app-finalize-checkout>
+                </mat-step>
+            </mat-horizontal-stepper>
+        </mat-card-content>
+        <mat-card-footer>
+            <div class="licenseStuff">
+                <span>2021, Mustermann GmbH & Co. KG (fiktiv), 44141 Dortmund</span>
+                <span>Bilder sind unter der <a href="https://pixabay.com/service/license/">Pixabay Lizenz</a> lizensiert.</span>
+            </div>
+        </mat-card-footer>
     </mat-card>
 </div>

@@ -1,1 +1,15 @@
-<p>finalize-checkout works!</p>
+<form [formGroup]="finalizeCheckoutFormGroup" class="stepContent" novalidate>
+    <mat-card class="finalize-checkout-card">
+        <mat-card-header>
+            <mat-card-title>Bestellübersicht</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+        </mat-card-content>
+
+        <mat-card-actions class="cardActions">
+            <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
+            <button mat-raised-button (click)="goForward()" color="primary" type="submit">Kostenpflichtig bestellen</button>
+        </mat-card-actions>
+    </mat-card>
+</form>
