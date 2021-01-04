@@ -22,5 +22,4 @@ export class CheckoutComponent implements OnInit {
     this.paymentDataFormGroup = this.fb.group({});
     this.finalizeCheckoutFormGroup = this.fb.group({});
   }
-
 }

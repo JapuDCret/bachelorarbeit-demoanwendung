@@ -1,7 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
-import { subscribeOn } from 'rxjs/operators';
+
+import { ProgressService } from 'src/app/progress.service';
 
 @Component({
   selector: 'app-billing-address',
@@ -23,7 +24,7 @@ export class BillingAddressComponent {
 
   @Input('stepper') stepper: MatStepper;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private progressService: ProgressService) { }
 
   goBack(): void {
     console.log('goBack()');
@@ -46,9 +47,13 @@ export class BillingAddressComponent {
     console.log('submit()');
 
     // TODO: submit data
+
+    this.progressService.showProgess();
     
     window.setTimeout(() => {
       this.stepper.next();
+
+      this.progressService.hideProgess();
     }, 2500)
   }
 }
