@@ -2,11 +2,11 @@
     <mat-card>
         <mat-card-content>
             <mat-horizontal-stepper [linear]="true" #stepper>
-                <!-- <mat-step [stepControl]="step1.cartFormGroup">
+                <mat-step [stepControl]="step1.cartFormGroup">
                     <ng-template matStepLabel>Warenkorb</ng-template>
                     
-                    <app-shopping-cart #step1 [stepper]="stepper"></app-shopping-cart>
-                </mat-step> -->
+                    <app-shopping-cart #step1 [stepper]="stepper" (submitted)="onShoppingCartSubmit($event)"></app-shopping-cart>
+                </mat-step>
                 <mat-step [stepControl]="step2.billingAddressFormGroup">
                     <ng-template matStepLabel>Rechnungsadresse</ng-template>
                     

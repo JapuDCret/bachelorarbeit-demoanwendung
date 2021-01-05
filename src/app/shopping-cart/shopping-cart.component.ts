@@ -1,11 +1,23 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { MatTable } from '@angular/material/table';
+
 import { from, Observable } from 'rxjs';
 import { delay, mergeMap, reduce } from 'rxjs/operators';
 
 import { ShoppingCartDataSource, ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
+
+export interface CheckoutShopItem {
+  itemId: number;
+  name: string;
+  price: number;
+  imagePath: string;
+}
+
+export interface CheckoutShoppingCart {
+  contents: CheckoutShopItem[];
+}
 
 @Component({
   selector: 'app-shopping-cart',
@@ -21,6 +33,7 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   });
 
   @Input('stepper') stepper: MatStepper;
+  @Output('stepper') submitted = new EventEmitter<CheckoutShoppingCart>();
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['imagePath', 'amount', 'name', 'price'];
@@ -60,6 +73,16 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   private submit(): void {
     console.log('submit()');
 
-    this.stepper.next();
+    this.dataSource.connect().subscribe(
+      (shoppingCart) => {
+        const checkoutShoppingCart: CheckoutShoppingCart = {
+          contents: shoppingCart
+        };
+    
+        // console.log('submit(): checkoutShoppingCart = ', checkoutShoppingCart);
+        this.submitted.emit(checkoutShoppingCart);
+
+        this.stepper.next();
+    });
   }
 }

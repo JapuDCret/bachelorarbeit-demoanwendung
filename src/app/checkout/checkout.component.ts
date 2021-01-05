@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
+import { CheckoutShoppingCart } from 'src/app/shopping-cart/shopping-cart.component';
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
 import { CheckoutShippingData } from 'src/app/shipping-data/shipping-data.component';
 import { CheckoutPaymentData } from 'src/app/payment-data/payment-data.component';
 
 export interface CheckoutData {
+  shoppingCart: null | CheckoutShoppingCart;
   billingAddress: null | CheckoutBillingAddress;
   shippingData: null | CheckoutShippingData;
   paymentData: null | CheckoutPaymentData;
@@ -24,9 +26,10 @@ export class CheckoutComponent implements OnInit {
   finalizeCheckoutFormGroup: FormGroup;
 
   checkoutData: CheckoutData = {
+    shoppingCart: null,
     billingAddress: null,
     shippingData: null,
-    paymentData: null,
+    paymentData: null
   }
 
   constructor(private fb: FormBuilder) { }
@@ -37,6 +40,12 @@ export class CheckoutComponent implements OnInit {
     this.shippingDataFormGroup = this.fb.group({});
     this.paymentDataFormGroup = this.fb.group({});
     this.finalizeCheckoutFormGroup = this.fb.group({});
+  }
+
+  onShoppingCartSubmit(data: CheckoutShoppingCart): void {
+    console.log('onShoppingCartSubmit(): data = ', data);
+
+    this.checkoutData.shoppingCart = data;
   }
 
   onBillingAddressSubmit(data: CheckoutBillingAddress): void {

@@ -43,7 +43,7 @@ export class PaymentDataComponent {
       paymentOption: this.paymentDataFormGroup.get('paymentOptions').value
     };
 
-    // console.log('submit(): checkoutBillingAddress = ', checkoutBillingAddress);
+    // console.log('submit(): checkoutPaymentData = ', checkoutPaymentData);
 
     this.submitted.emit(checkoutPaymentData);
     
