@@ -1,60 +1,60 @@
 .full-width {
-  width: 100%;
+    width: 100%;
 }
 
 .shipping-card {
-  min-width: 120px;
-  margin: 20px auto;
+    min-width: 120px;
+    margin: 20px auto;
 }
 
 .mat-radio-button {
-  display: block;
-  margin: 5px 0;
+    display: block;
+    margin: 5px 0;
 }
 
 .row {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .col {
-  flex: 1;
-  margin-right: 20px;
+    flex: 1;
+    margin-right: 20px;
 }
 
 .col-3 {
-  flex-grow: 0;
-  max-width: 25%;
-  flex-basis: 25%;
-  margin-right: 20px;
+    flex-grow: 0;
+    max-width: 25%;
+    flex-basis: 25%;
+    margin-right: 20px;
 }
 
 .col-4 {
-  flex-grow: 0;
-  max-width: 33.33%;
-  flex-basis: 33.33%;
-  margin-right: 20px;
+    flex-grow: 0;
+    max-width: 33.33%;
+    flex-basis: 33.33%;
+    margin-right: 20px;
 }
 
 .col-6 {
-  flex-grow: 0;
-  max-width: 50%;
-  flex-basis: 50%;
-  margin-right: 20px;
+    flex-grow: 0;
+    max-width: 50%;
+    flex-basis: 50%;
+    margin-right: 20px;
 }
 
 .col-8 {
-  flex-grow: 0;
-  max-width: 66.66%;
-  flex-basis: 66.66%;
-  margin-right: 20px;
+    flex-grow: 0;
+    max-width: 66.66%;
+    flex-basis: 66.66%;
+    margin-right: 20px;
 }
 
 .col-9 {
-  flex-grow: 0;
-  max-width: 75%;
-  flex-basis: 75%;
-  margin-right: 20px;
+    flex-grow: 0;
+    max-width: 75%;
+    flex-basis: 75%;
+    margin-right: 20px;
 }
 
 .col:last-child,
@@ -63,20 +63,20 @@
 .col-6:last-child,
 .col-8:last-child,
 .col-9:last-child {
-  margin-right: 0;
+    margin-right: 0;
 }
 
 .postalCodeInput::-webkit-outer-spin-button,
 .postalCodeInput::-webkit-inner-spin-button {
-  display: none;
+    display: none;
 }
 
 .postalCodeInput[type=number] {
-  -moz-appearance:textfield; /* Firefox */
+    -moz-appearance:textfield; /* Firefox */
 }
 
 .cardActions {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
 }

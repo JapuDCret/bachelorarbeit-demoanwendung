@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
+
+import { CheckoutData } from 'src/app/checkout/checkout.component';
 
 @Component({
   selector: 'app-finalize-checkout',
@@ -12,6 +14,7 @@ export class FinalizeCheckoutComponent {
   });
 
   @Input('stepper') stepper: MatStepper;
+  @Input('checkoutData') checkoutData: CheckoutData;
 
   constructor(private fb: FormBuilder) {}
 

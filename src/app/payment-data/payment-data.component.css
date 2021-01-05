@@ -3,3 +3,12 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+.paymentOptionContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.paymentOptionContainer > *:not(:first-child) {
+    margin-top: 0.5rem;
+}

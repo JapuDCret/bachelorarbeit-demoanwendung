@@ -3,10 +3,12 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
 import { CheckoutShippingData } from 'src/app/shipping-data/shipping-data.component';
+import { CheckoutPaymentData } from 'src/app/payment-data/payment-data.component';
 
 export interface CheckoutData {
   billingAddress: null | CheckoutBillingAddress;
   shippingData: null | CheckoutShippingData;
+  paymentData: null | CheckoutPaymentData;
 }
 
 @Component({
@@ -24,6 +26,7 @@ export class CheckoutComponent implements OnInit {
   checkoutData: CheckoutData = {
     billingAddress: null,
     shippingData: null,
+    paymentData: null,
   }
 
   constructor(private fb: FormBuilder) { }
@@ -46,5 +49,11 @@ export class CheckoutComponent implements OnInit {
     console.log('onShippingDataSubmit(): data = ', data);
     
     this.checkoutData.shippingData = data;
+  }
+
+  onPaymentDataSubmit(data: CheckoutPaymentData): void {
+    console.log('onPaymentDataSubmit(): data = ', data);
+    
+    this.checkoutData.paymentData = data;
   }
 }

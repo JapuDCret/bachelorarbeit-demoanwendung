@@ -1,6 +1,10 @@
-import { Component, Input } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
+
+export interface CheckoutPaymentData {
+  paymentOption: 'Rechnung' | 'Überweisung' | 'PayPal' | 'Kreditkarte';
+};
 
 @Component({
   selector: 'app-payment-data',
@@ -9,9 +13,11 @@ import { MatStepper } from '@angular/material/stepper';
 })
 export class PaymentDataComponent {
   paymentDataFormGroup = this.fb.group({
+    paymentOptions: ['Rechnung', Validators.required]
   });
 
   @Input('stepper') stepper: MatStepper;
+  @Output() submitted = new EventEmitter<CheckoutPaymentData>();
 
   constructor(private fb: FormBuilder) { }
 
@@ -32,8 +38,14 @@ export class PaymentDataComponent {
 
   private submit(): void {
     console.log('onSubmit()');
+    
+    const checkoutPaymentData: CheckoutPaymentData = {
+      paymentOption: this.paymentDataFormGroup.get('paymentOptions').value
+    };
 
-    // TODO: submit data
+    // console.log('submit(): checkoutBillingAddress = ', checkoutBillingAddress);
+
+    this.submitted.emit(checkoutPaymentData);
     
     window.setTimeout(() => {
       this.stepper.next();

@@ -4,8 +4,56 @@
             <mat-card-title>Bestellübersicht</mat-card-title>
         </mat-card-header>
 
-        <mat-card-content>
-        </mat-card-content>
+        <div class="row">
+            <div class="col-6">
+                <mat-card-content>
+                    <mat-card class="finalize-checkout-card">
+                        <mat-card-header>
+                            <mat-card-title>Rechnungsadresse</mat-card-title>
+                        </mat-card-header>
+                
+                        <mat-card-content *ngIf="checkoutData.billingAddress != undefined">
+                            <p>{{checkoutData.billingAddress.salutation}} {{checkoutData.billingAddress.firstName}} {{checkoutData.billingAddress.lastName}}</p>
+                            <p>{{checkoutData.billingAddress.streetName}} {{checkoutData.billingAddress.streetNo}}</p>
+                            <p>{{checkoutData.billingAddress.postalCode}} {{checkoutData.billingAddress.city}}</p>
+                            <p>{{checkoutData.billingAddress.email}}</p>
+                        </mat-card-content>
+                    </mat-card>
+                </mat-card-content>
+            </div>
+
+            <div class="col-6">
+                <mat-card-content>
+                    <mat-card class="finalize-checkout-card">
+                        <mat-card-header>
+                            <mat-card-title>Lieferadresse</mat-card-title>
+                        </mat-card-header>
+                
+                        <mat-card-content *ngIf="checkoutData.shippingData != undefined">
+                            <p>{{checkoutData.shippingData.salutation}} {{checkoutData.shippingData.firstName}} {{checkoutData.shippingData.lastName}}</p>
+                            <p>{{checkoutData.shippingData.streetName}} {{checkoutData.shippingData.streetNo}}</p>
+                            <p>{{checkoutData.shippingData.postalCode}} {{checkoutData.shippingData.city}}</p>
+                        </mat-card-content>
+                    </mat-card>
+                </mat-card-content>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <mat-card-content>
+                    <mat-card class="finalize-checkout-card">
+                        <mat-card-header>
+                            <mat-card-title>Zahlungsart</mat-card-title>
+                        </mat-card-header>
+                
+                        <mat-card-content *ngIf="checkoutData.paymentData != undefined">
+                            <p>Bezahlung per {{checkoutData.paymentData.paymentOption}}</p>
+                        </mat-card-content>
+                    </mat-card>
+                </mat-card-content>
+            </div>
+        </div>
 
         <mat-card-actions class="cardActions">
             <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>

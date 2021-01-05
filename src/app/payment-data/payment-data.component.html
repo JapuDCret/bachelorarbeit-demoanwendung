@@ -5,6 +5,12 @@
         </mat-card-header>
 
         <mat-card-content>
+            <mat-radio-group formControlName="paymentOptions" class="paymentOptionContainer">
+                <mat-radio-button value="Rechnung">Rechnung</mat-radio-button>
+                <mat-radio-button  value="Überweisung">Überweisung</mat-radio-button>
+                <mat-radio-button  value="PayPal">PayPal</mat-radio-button>
+                <mat-radio-button  value="Kreditkarte">Kreditkarte</mat-radio-button>
+            </mat-radio-group>              
         </mat-card-content>
 
         <mat-card-actions class="cardActions">

@@ -20,12 +20,12 @@
                 <mat-step [stepControl]="step4.paymentDataFormGroup">
                     <ng-template matStepLabel>Zahlungsdaten</ng-template>
                     
-                    <app-payment-data #step4 [stepper]="stepper"></app-payment-data>
+                    <app-payment-data #step4 [stepper]="stepper" (submitted)="onPaymentDataSubmit($event)"></app-payment-data>
                 </mat-step>
                 <mat-step [stepControl]="step5.finalizeCheckoutFormGroup">
                     <ng-template matStepLabel>Bestellung abschließen</ng-template>
                     
-                    <app-finalize-checkout #step5 [stepper]="stepper"></app-finalize-checkout>
+                    <app-finalize-checkout #step5 [stepper]="stepper" [checkoutData]="checkoutData"></app-finalize-checkout>
                 </mat-step>
             </mat-horizontal-stepper>
         </mat-card-content>

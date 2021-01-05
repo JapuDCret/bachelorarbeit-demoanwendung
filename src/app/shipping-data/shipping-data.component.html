@@ -1,27 +1,29 @@
-    <mat-card class="shipping-data-card">
-        <mat-card-header>
-            <mat-card-title>Lieferdaten</mat-card-title>
-        </mat-card-header>
+<mat-card class="shipping-data-card">
+    <mat-card-header>
+        <mat-card-title>Lieferdaten</mat-card-title>
+    </mat-card-header>
 
-        <mat-card-content>
-            <div class="row">
-                <div class="col">
-                    <form [formGroup]="useBillingAddressFormGroup" novalidate>
-                        <mat-checkbox #useBillingAddress formControlName="useBillingAddress" color="primary">Gleiche Lieferadresse wie Rechnungsadresse</mat-checkbox>
-                    </form>
-                </div>
+    <mat-card-content>
+        <div class="row">
+            <div class="col">
+                <form [formGroup]="useBillingAddressFormGroup" novalidate>
+                    <mat-checkbox #useBillingAddress formControlName="useBillingAddress" color="primary">Gleiche
+                        Lieferadresse wie Rechnungsadresse</mat-checkbox>
+                </form>
             </div>
-            <div class="row">
-                <div class="col">
-                    <hr class="spacer">
-                </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <hr class="spacer">
             </div>
-            <div class="formContainer" [class.inactive]="useBillingAddress.checked">
-                <form [formGroup]="shippingDataFormGroup" class="stepContent" novalidate>
+        </div>
+        <div class="formContainer" [class.inactive]="useBillingAddress.checked">
+            <form [formGroup]="shippingDataFormGroup" class="stepContent" novalidate>
                 <div class="row">
                     <div class="col-3">
                         <mat-form-field class="full-width">
-                            <input matInput placeholder="Anrede" formControlName="salutation" name="shippingDataSalutation">
+                            <input matInput placeholder="Anrede" formControlName="salutation"
+                                name="shippingDataSalutation">
                             <mat-error *ngIf="shippingDataFormGroup.controls['salutation'].hasError('required')">
                                 Anrede wird <strong>benötigt</strong>
                             </mat-error>
@@ -31,7 +33,8 @@
                 <div class="row">
                     <div class="col">
                         <mat-form-field class="full-width">
-                            <input matInput placeholder="Vorname" formControlName="firstName" name="shippingDataFirstName">
+                            <input matInput placeholder="Vorname" formControlName="firstName"
+                                name="shippingDataFirstName">
                             <mat-error *ngIf="shippingDataFormGroup.controls['firstName'].hasError('required')">
                                 Vorname wird <strong>benötigt</strong>
                             </mat-error>
@@ -39,7 +42,8 @@
                     </div>
                     <div class="col">
                         <mat-form-field class="full-width">
-                            <input matInput placeholder="Nachname" formControlName="lastName" name="shippingDataLastName">
+                            <input matInput placeholder="Nachname" formControlName="lastName"
+                                name="shippingDataLastName">
                             <mat-error *ngIf="shippingDataFormGroup.controls['lastName'].hasError('required')">
                                 Nachname wird <strong>benötigt</strong>
                             </mat-error>
@@ -49,7 +53,8 @@
                 <div class="row">
                     <div class="col-9">
                         <mat-form-field class="full-width">
-                            <input matInput placeholder="Straße" formControlName="streetName" name="shippingDataStreetName">
+                            <input matInput placeholder="Straße" formControlName="streetName"
+                                name="shippingDataStreetName">
                             <mat-error *ngIf="shippingDataFormGroup.controls['streetName'].hasError('required')">
                                 Straße wird <strong>benötigt</strong>
                             </mat-error>
@@ -57,7 +62,8 @@
                     </div>
                     <div class="col-3">
                         <mat-form-field class="full-width">
-                            <input matInput placeholder="Nr." formControlName="streetNo" name="shippingDataStreetNumber">
+                            <input matInput placeholder="Nr." formControlName="streetNo"
+                                name="shippingDataStreetNumber">
                             <mat-error *ngIf="shippingDataFormGroup.controls['streetNo'].hasError('required')">
                                 Straßenummer wird <strong>benötigt</strong>
                             </mat-error>
@@ -85,11 +91,11 @@
                     </div>
                 </div>
             </form>
-            </div>
-        </mat-card-content>
+        </div>
+    </mat-card-content>
 
-        <mat-card-actions class="cardActions">
-            <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
-            <button mat-raised-button (click)="goForward()" color="primary" type="submit">Weiter</button>
-        </mat-card-actions>
-    </mat-card>
+    <mat-card-actions class="cardActions">
+        <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
+        <button mat-raised-button (click)="goForward()" color="primary" type="submit">Weiter</button>
+    </mat-card-actions>
+</mat-card>
