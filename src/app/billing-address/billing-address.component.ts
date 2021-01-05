@@ -1,8 +1,17 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 
-import { ProgressService } from 'src/app/progress.service';
+export interface CheckoutBillingAddress {
+  salutation: string;
+  firstName: string;
+  lastName: string;
+  streetName: string;
+  streetNo: number;
+  city: string;
+  postalCode: number;
+  email: string;
+}
 
 @Component({
   selector: 'app-billing-address',
@@ -19,12 +28,16 @@ export class BillingAddressComponent {
     city: [null, Validators.required],
     postalCode: [null, Validators.compose([
       Validators.required, Validators.minLength(5), Validators.maxLength(5)])
-    ]
+    ],
+    email: [null, Validators.compose([
+      Validators.required, Validators.email])
+    ],
   });
 
   @Input('stepper') stepper: MatStepper;
+  @Output() submitted = new EventEmitter<CheckoutBillingAddress>();
 
-  constructor(private fb: FormBuilder, private progressService: ProgressService) { }
+  constructor(private fb: FormBuilder) { }
 
   goBack(): void {
     console.log('goBack()');
@@ -37,7 +50,7 @@ export class BillingAddressComponent {
 
     console.log('goForward(): this.billingAddressFormGroup.valid = ', this.billingAddressFormGroup.valid);
 
-    if(this.billingAddressFormGroup.valid) {
+    if (this.billingAddressFormGroup.valid) {
       console.log('goForward(): calling submit()');
       this.submit();
     }
@@ -45,15 +58,24 @@ export class BillingAddressComponent {
 
   private submit(): void {
     console.log('submit()');
-
-    // TODO: submit data
-
-    this.progressService.showProgess();
     
+    const checkoutBillingAddress: CheckoutBillingAddress = {
+      salutation: this.billingAddressFormGroup.get('salutation').value,
+      firstName: this.billingAddressFormGroup.get('firstName').value,
+      lastName: this.billingAddressFormGroup.get('lastName').value,
+      streetName: this.billingAddressFormGroup.get('streetName').value,
+      streetNo: this.billingAddressFormGroup.get('streetNo').value,
+      city: this.billingAddressFormGroup.get('city').value,
+      postalCode: this.billingAddressFormGroup.get('postalCode').value,
+      email: this.billingAddressFormGroup.get('email').value
+    };
+
+    // console.log('submit(): checkoutBillingAddress = ', checkoutBillingAddress);
+
+    this.submitted.emit(checkoutBillingAddress);
+
     window.setTimeout(() => {
       this.stepper.next();
-
-      this.progressService.hideProgess();
-    }, 2500)
+    }, 250);
   }
 }

@@ -37,6 +37,6 @@ export class PaymentDataComponent {
     
     window.setTimeout(() => {
       this.stepper.next();
-    }, 2500)
+    }, 250);
   }
 }

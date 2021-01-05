@@ -16,17 +16,18 @@ export class ProgressService {
   private cdkProgressCreate() {
    return this.overlay.create({
       positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically(),
+
       hasBackdrop: true
     });
   }
   
-  showProgess() {
-    console.log('showProgess()');
+  showGlobalProgess() {
+    console.log('showGlobalProgess()');
     this.progessTopRef.attach(new ComponentPortal(ProgressContainerComponent));
   }
   
-  hideProgess() {
-    console.log('hideProgess()');
+  hideGlobalProgess() {
+    console.log('hideGlobalProgess()');
     this.progessTopRef.detach();
   }
 }

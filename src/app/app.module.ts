@@ -9,14 +9,14 @@ import { OverlayModule } from '@angular/cdk/overlay';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
@@ -47,14 +47,14 @@ import { ProgressContainerComponent } from 'src/app/progress-container/progress-
     OverlayModule,
     MatButtonModule,
     MatCardModule,
-    MatStepperModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
+    MatCheckboxModule,
     MatInputModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
     MatSelectModule,
-    MatRadioModule,
-    MatProgressSpinnerModule
+    MatSortModule,
+    MatStepperModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -74,6 +74,18 @@
                     </mat-form-field>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput placeholder="E-Mail" type="email" formControlName="email"
+                            name="billingAddressEmail" class="emailInput">
+                        <mat-error *ngIf="billingAddressFormGroup.controls['email'].hasError('required')">
+                            E-Mail wird <strong>benötigt</strong>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
         </mat-card-content>
 
         <mat-card-actions class="cardActions">
