@@ -28,6 +28,7 @@ import { ShippingDataComponent } from 'src/app/shipping-data/shipping-data.compo
 import { PaymentDataComponent } from 'src/app/payment-data/payment-data.component';
 import { FinalizeCheckoutComponent } from 'src/app/finalize-checkout/finalize-checkout.component';
 import { ProgressContainerComponent } from 'src/app/progress-container/progress-container.component';
+import { ShoppingCartTableComponent } from './shopping-cart-table/shopping-cart-table.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ProgressContainerComponent } from 'src/app/progress-container/progress-
     ShippingDataComponent,
     PaymentDataComponent,
     FinalizeCheckoutComponent,
-    ProgressContainerComponent
+    ProgressContainerComponent,
+    ShoppingCartTableComponent
   ],
   imports: [
     BrowserModule,

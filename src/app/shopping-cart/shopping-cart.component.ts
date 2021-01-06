@@ -33,7 +33,6 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   });
 
   @Input('stepper') stepper: MatStepper;
-  @Output('stepper') submitted = new EventEmitter<CheckoutShoppingCart>();
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['imagePath', 'amount', 'name', 'price'];
@@ -73,16 +72,6 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   private submit(): void {
     console.log('submit()');
 
-    this.dataSource.connect().subscribe(
-      (shoppingCart) => {
-        const checkoutShoppingCart: CheckoutShoppingCart = {
-          contents: shoppingCart
-        };
-    
-        // console.log('submit(): checkoutShoppingCart = ', checkoutShoppingCart);
-        this.submitted.emit(checkoutShoppingCart);
-
-        this.stepper.next();
-    });
+    this.stepper.next();
   }
 }

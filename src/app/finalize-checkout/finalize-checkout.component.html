@@ -4,60 +4,113 @@
             <mat-card-title>Bestellübersicht</mat-card-title>
         </mat-card-header>
 
-        <div class="row">
-            <div class="col-6">
-                <mat-card-content>
-                    <mat-card class="finalize-checkout-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-card>
+                        <mat-card-header>
+                            <mat-card-title>Warenkorb</mat-card-title>
+                        </mat-card-header>
+
+                        <mat-card-content>
+                            <table mat-table class="full-width-table" aria-label="Elements">
+                                <!-- ImagePath Column -->
+                                <ng-container matColumnDef="imagePath">
+                                    <th mat-header-cell *matHeaderCellDef></th>
+                                    <td mat-cell *matCellDef="let row"><img height="32px" src="{{row.imagePath}}" /></td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                
+                                <!-- Amount Column -->
+                                <ng-container matColumnDef="amount">
+                                    <th mat-header-cell *matHeaderCellDef>Anzahl</th>
+                                    <td mat-cell *matCellDef="let row">{{row.amount}}</td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                                    <td mat-cell *matCellDef="let row">{{row.name}}</td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                
+                                <!-- Price Column -->
+                                <ng-container matColumnDef="price">
+                                    <th mat-header-cell *matHeaderCellDef>Preis</th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <div *ngIf="(row.amount === 1); then thenBlock else elseBlock"></div>
+                                        <ng-template #thenBlock>{{row.price | number:'1.2'}} €</ng-template>
+                                        <ng-template #elseBlock>{{(row.price * row.amount) | number:'1.2'}} € (je {{row.price |
+                                            number:'1.2'}} €)</ng-template>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef>
+                                        <ng-container *ngIf="(totalSum$ | async); let totalSum">{{totalSum | number:'1.2'}} €
+                                        </ng-container>
+                                    </td>
+                                </ng-container>
+                
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                            </table>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <mat-card>
                         <mat-card-header>
                             <mat-card-title>Rechnungsadresse</mat-card-title>
                         </mat-card-header>
-                
+
                         <mat-card-content *ngIf="checkoutData.billingAddress != undefined">
-                            <p>{{checkoutData.billingAddress.salutation}} {{checkoutData.billingAddress.firstName}} {{checkoutData.billingAddress.lastName}}</p>
+                            <p>{{checkoutData.billingAddress.salutation}} {{checkoutData.billingAddress.firstName}}
+                                {{checkoutData.billingAddress.lastName}}</p>
                             <p>{{checkoutData.billingAddress.streetName}} {{checkoutData.billingAddress.streetNo}}</p>
                             <p>{{checkoutData.billingAddress.postalCode}} {{checkoutData.billingAddress.city}}</p>
                             <p>{{checkoutData.billingAddress.email}}</p>
                         </mat-card-content>
                     </mat-card>
-                </mat-card-content>
-            </div>
+                </div>
 
-            <div class="col-6">
-                <mat-card-content>
-                    <mat-card class="finalize-checkout-card">
+                <div class="col-6">
+                    <mat-card>
                         <mat-card-header>
                             <mat-card-title>Lieferadresse</mat-card-title>
                         </mat-card-header>
-                
+
                         <mat-card-content *ngIf="checkoutData.shippingData != undefined">
-                            <p>{{checkoutData.shippingData.salutation}} {{checkoutData.shippingData.firstName}} {{checkoutData.shippingData.lastName}}</p>
+                            <p>{{checkoutData.shippingData.salutation}} {{checkoutData.shippingData.firstName}}
+                                {{checkoutData.shippingData.lastName}}</p>
                             <p>{{checkoutData.shippingData.streetName}} {{checkoutData.shippingData.streetNo}}</p>
                             <p>{{checkoutData.shippingData.postalCode}} {{checkoutData.shippingData.city}}</p>
                         </mat-card-content>
                     </mat-card>
-                </mat-card-content>
+                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col">
-                <mat-card-content>
-                    <mat-card class="finalize-checkout-card">
+            <div class="row">
+                <div class="col">
+                    <mat-card>
                         <mat-card-header>
                             <mat-card-title>Zahlungsart</mat-card-title>
                         </mat-card-header>
-                
+
                         <mat-card-content *ngIf="checkoutData.paymentData != undefined">
                             <p>Bezahlung per {{checkoutData.paymentData.paymentOption}}</p>
                         </mat-card-content>
                     </mat-card>
-                </mat-card-content>
+                </div>
             </div>
-        </div>
+        </mat-card-content>
 
         <mat-card-actions class="cardActions">
             <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
-            <button mat-raised-button (click)="goForward()" color="primary" type="submit">Kostenpflichtig bestellen</button>
+            <button mat-raised-button (click)="goForward()" color="primary" type="submit">Kostenpflichtig
+                bestellen</button>
         </mat-card-actions>
     </mat-card>
 </form>

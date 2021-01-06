@@ -3,6 +3,10 @@
     flex-direction: row;
 }
 
+.row:not(:first-child) {
+    margin-top: 1rem;
+}
+
 .col {
     flex: 1;
     margin-right: 20px;
@@ -50,6 +54,19 @@
 .col-8:last-child,
 .col-9:last-child {
     margin-right: 0;
+}
+
+.col mat-card,
+.col-3 mat-card,
+.col-4 mat-card,
+.col-6 mat-card,
+.col-8 mat-card,
+.col-9 mat-card {
+    height: calc(100% - 32px);
+}
+
+.full-width-table {
+    width: 100%;
 }
 
 .cardActions {
