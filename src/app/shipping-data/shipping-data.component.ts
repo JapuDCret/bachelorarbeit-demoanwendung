@@ -27,13 +27,13 @@ export class ShippingDataComponent implements OnChanges {
   });
 
   shippingDataFormGroup = this.fb.group({
-    salutation: [{ value: null, disabled: true}, Validators.required],
-    firstName: [{ value: null, disabled: true}, Validators.required],
-    lastName: [{ value: null, disabled: true}, Validators.required],
-    streetName: [{ value: null, disabled: true}, Validators.required],
-    streetNo: [{ value: null, disabled: true}, Validators.required],
-    city: [{ value: null, disabled: true}, Validators.required],
-    postalCode: [{ value: null, disabled: true}, Validators.compose([
+    salutation: [{ value: null}, Validators.required],
+    firstName: [{ value: null}, Validators.required],
+    lastName: [{ value: null}, Validators.required],
+    streetName: [{ value: null}, Validators.required],
+    streetNo: [{ value: null}, Validators.required],
+    city: [{ value: null}, Validators.required],
+    postalCode: [{ value: null}, Validators.compose([
       Validators.required, Validators.minLength(5), Validators.maxLength(5)])
     ]
   });
@@ -105,11 +105,11 @@ export class ShippingDataComponent implements OnChanges {
     const controls = this.getAllControls();
 
     controls.forEach((control) => {
-      if(disabledState) {
-        control.disable();
-      } else {
-        control.enable();
-      }
+      // if(disabledState) {
+      //   control.disable({ onlySelf: true });
+      // } else {
+      //   control.enable();
+      // }
     });
   }
 

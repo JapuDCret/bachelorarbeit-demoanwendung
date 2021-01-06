@@ -1,21 +1,134 @@
-<form [formGroup]="paymentDataFormGroup" class="stepContent" novalidate>
-    <mat-card class="payment-data-card">
-        <mat-card-header>
-            <mat-card-title>Zahlungsdaten</mat-card-title>
-        </mat-card-header>
+<mat-card class="payment-data-card">
+    <mat-card-header>
+        <mat-card-title>Zahlungsdaten</mat-card-title>
+    </mat-card-header>
 
-        <mat-card-content>
-            <mat-radio-group formControlName="paymentOptions" class="paymentOptionContainer">
-                <mat-radio-button value="Rechnung">Rechnung</mat-radio-button>
-                <mat-radio-button  value="Überweisung">Überweisung</mat-radio-button>
-                <mat-radio-button  value="PayPal">PayPal</mat-radio-button>
-                <mat-radio-button  value="Kreditkarte">Kreditkarte</mat-radio-button>
-            </mat-radio-group>              
-        </mat-card-content>
+    <mat-card-content class="paymentDataContent">
+        <div class="paymentTypeContainer">
+            <form [formGroup]="paymentDataFormGroup" class="stepContent" novalidate>
+                <h3>Zahlungsart:</h3>
+                <mat-radio-group formControlName="paymentOptions" class="paymentOptionContainer">
+                    <mat-radio-button value="Rechnung">Rechnung</mat-radio-button>
+                    <mat-radio-button value="Lastschrift">Lastschrift</mat-radio-button>
+                    <mat-radio-button value="PayPal">PayPal</mat-radio-button>
+                    <mat-radio-button value="Kreditkarte">Kreditkarte</mat-radio-button>
+                </mat-radio-group>
+            </form>
+        </div>
 
-        <mat-card-actions class="cardActions">
-            <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
-            <button mat-raised-button (click)="goForward()" color="primary" type="submit">Weiter</button>
-        </mat-card-actions>
-    </mat-card>
-</form>
+        <div class="paymentDataContainer">
+            <h3>Zahlungsdaten:</h3>
+            <mat-card [class.hidden]="paymentDataFormGroup.get('paymentOptions').value !== 'PayPal'">
+                <mat-card-content>
+                    <form [formGroup]="paypalFormGroup" novalidate>
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="PayPal E-Mail Adresse" formControlName="email"
+                                name="paypalEmail">
+                            <mat-error *ngIf="paypalFormGroup.controls['email'].hasError('required')">
+                                Ihre PayPal E-Mail Adresse wird <strong>benötigt</strong>
+                            </mat-error>
+                        </mat-form-field>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+            <mat-card [class.hidden]="paymentDataFormGroup.get('paymentOptions').value !== 'Rechnung'">
+                <mat-card-content>
+                    <p>Es werden keine weiteren Daten benötigt.</p>
+                </mat-card-content>
+            </mat-card>
+            <mat-card [class.hidden]="paymentDataFormGroup.get('paymentOptions').value !== 'Lastschrift'">
+                <mat-card-content>
+                    <form [formGroup]="lastschriftFormGroup" novalidate>
+                        <div class="row">
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Kontoinhaber" formControlName="inhaber"
+                                        name="lastschriftInhaber">
+                                    <mat-error *ngIf="lastschriftFormGroup.controls['inhaber'].hasError('required')">
+                                        Kontoinhaber wird <strong>benötigt</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="IBAN" formControlName="iban" name="lastschriftIban">
+                                    <mat-error *ngIf="lastschriftFormGroup.controls['iban'].hasError('required')">
+                                        IBAN wird <strong>benötigt</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+            <mat-card [class.hidden]="paymentDataFormGroup.get('paymentOptions').value !== 'Kreditkarte'">
+                <mat-card-content>
+                    <form [formGroup]="kreditkartenFormGroup" novalidate>
+                        <div class="row">
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Karteninhaber" formControlName="inhaber"
+                                        name="kreditkartenInhaber">
+                                    <mat-error *ngIf="kreditkartenFormGroup.controls['inhaber'].hasError('required')">
+                                        Karteninhaber wird <strong>benötigt</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Kartennummer" formControlName="nummer"
+                                        name="kreditkartenNummer">
+                                    <mat-error *ngIf="kreditkartenFormGroup.controls['nummer'].hasError('required')">
+                                        Kartennummer wird <strong>benötigt</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="CVC" formControlName="cvcCode" name="kreditkartenCvc">
+                                    <mat-error *ngIf="kreditkartenFormGroup.controls['cvcCode'].hasError('required')">
+                                        CVC wird <strong>benötigt</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-3" style="display: flex; align-items: center; justify-content: end;">
+                                <p>Gültig bis:</p>
+                            </div>
+                            <div class="col-3">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Monat" formControlName="gueltigBisMonat"
+                                        name="kreditkartenMonat">
+                                    <mat-error
+                                        *ngIf="kreditkartenFormGroup.controls['gueltigBisMonat'].hasError('required')">
+                                        Monat wird <strong>benötigt</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-6">
+                                <mat-form-field class="full-width">
+                                    <input matInput placeholder="Jahr" formControlName="gueltigBisJahr"
+                                        name="kreditkartenJahr">
+                                    <mat-error
+                                        *ngIf="kreditkartenFormGroup.controls['gueltigBisJahr'].hasError('required')">
+                                        Jahr wird <strong>benötigt</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions class="cardActions">
+        <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
+        <button mat-raised-button (click)="goForward()" color="primary" type="submit">Weiter</button>
+    </mat-card-actions>
+</mat-card>
