@@ -49,7 +49,7 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
         randItemId = getRndInteger(0, 9);
       } while (randData.find((shopItem) => {
         return shopItem.itemId === randItemId;
-      }) != undefined);
+      }) != null);
 
       const randAmount = getRndInteger(1, 4);
 

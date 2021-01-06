@@ -1,24 +1,24 @@
-<mat-card class="shipping-data-card">
-    <mat-card-header>
-        <mat-card-title>Lieferdaten</mat-card-title>
-    </mat-card-header>
+<form [formGroup]="shippingDataFormGroup" class="stepContent" novalidate>
+    <mat-card class="shipping-data-card">
+        <mat-card-header>
+            <mat-card-title>Lieferdaten</mat-card-title>
+        </mat-card-header>
 
-    <mat-card-content>
-        <div class="row">
-            <div class="col">
-                <form [formGroup]="useBillingAddressFormGroup" novalidate>
-                    <mat-checkbox #useBillingAddress formControlName="useBillingAddress" color="primary">Gleiche
-                        Lieferadresse wie Rechnungsadresse</mat-checkbox>
-                </form>
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <form [formGroup]="useBillingAddressFormGroup" novalidate>
+                        <mat-checkbox #useBillingAddress formControlName="useBillingAddress" color="primary">Gleiche
+                            Lieferadresse wie Rechnungsadresse</mat-checkbox>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <hr class="spacer">
+            <div class="row">
+                <div class="col">
+                    <hr class="spacer">
+                </div>
             </div>
-        </div>
-        <div class="formContainer" [class.inactive]="useBillingAddress.checked">
-            <form [formGroup]="shippingDataFormGroup" class="stepContent" novalidate>
+            <div class="formContainer" [class.inactive]="useBillingAddress.checked">
                 <div class="row">
                     <div class="col-3">
                         <mat-form-field class="full-width">
@@ -90,12 +90,12 @@
                         </mat-form-field>
                     </div>
                 </div>
-            </form>
-        </div>
-    </mat-card-content>
+            </div>
+        </mat-card-content>
 
-    <mat-card-actions class="cardActions">
-        <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
-        <button mat-raised-button (click)="goForward()" color="primary" type="submit">Weiter</button>
-    </mat-card-actions>
-</mat-card>
+        <mat-card-actions class="cardActions">
+            <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
+            <button mat-raised-button (click)="goForward()" color="primary" type="submit">Weiter</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

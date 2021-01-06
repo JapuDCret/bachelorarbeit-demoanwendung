@@ -1,6 +1,7 @@
+import { NgIfContext } from '@angular/common';
 import { EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
@@ -26,13 +27,13 @@ export class ShippingDataComponent implements OnChanges {
   });
 
   shippingDataFormGroup = this.fb.group({
-    salutation: [null, Validators.required],
-    firstName: [null, Validators.required],
-    lastName: [null, Validators.required],
-    streetName: [null, Validators.required],
-    streetNo: [null, Validators.required],
-    city: [null, Validators.required],
-    postalCode: [null, Validators.compose([
+    salutation: [{ value: null, disabled: true}, Validators.required],
+    firstName: [{ value: null, disabled: true}, Validators.required],
+    lastName: [{ value: null, disabled: true}, Validators.required],
+    streetName: [{ value: null, disabled: true}, Validators.required],
+    streetNo: [{ value: null, disabled: true}, Validators.required],
+    city: [{ value: null, disabled: true}, Validators.required],
+    postalCode: [{ value: null, disabled: true}, Validators.compose([
       Validators.required, Validators.minLength(5), Validators.maxLength(5)])
     ]
   });
@@ -45,11 +46,15 @@ export class ShippingDataComponent implements OnChanges {
     const useBillingAddressControl = this.useBillingAddressFormGroup.get('useBillingAddress');
     useBillingAddressControl.valueChanges.subscribe(
       (newValue) => {
-        console.log('changeUseBillingAddress(): useBillingAddressControl.value = ', useBillingAddressControl.value);
-        console.log('changeUseBillingAddress(): newValue = ', newValue);
+        // console.log('changeUseBillingAddress(): useBillingAddressControl.value = ', useBillingAddressControl.value);
+        // console.log('changeUseBillingAddress(): newValue = ', newValue);
         
         if(this.billingAddressData != null && newValue) {
           this.setFormToBillingAddressData(this.billingAddressData);
+          this.setDisabledStateOfForm(true);
+        } else {
+          this.setDisabledStateOfForm(false);
+          this.clearForm();
         }
       }
     );
@@ -63,14 +68,49 @@ export class ShippingDataComponent implements OnChanges {
     }
   }
 
+  private getAllControls(): AbstractControl[] {
+    return [
+      this.shippingDataFormGroup.get('salutation'),
+      this.shippingDataFormGroup.get('firstName'),
+      this.shippingDataFormGroup.get('lastName'),
+      this.shippingDataFormGroup.get('streetName'),
+      this.shippingDataFormGroup.get('streetNo'),
+      this.shippingDataFormGroup.get('city'),
+      this.shippingDataFormGroup.get('postalCode'),
+    ];
+  }
+
   private setFormToBillingAddressData(billingAddressData: CheckoutBillingAddress): void {
-    this.shippingDataFormGroup.get('salutation').setValue(billingAddressData.salutation);
-    this.shippingDataFormGroup.get('firstName').setValue(billingAddressData.firstName);
-    this.shippingDataFormGroup.get('lastName').setValue(billingAddressData.lastName);
-    this.shippingDataFormGroup.get('streetName').setValue(billingAddressData.streetName);
-    this.shippingDataFormGroup.get('streetNo').setValue(billingAddressData.streetNo);
-    this.shippingDataFormGroup.get('city').setValue(billingAddressData.city);
-    this.shippingDataFormGroup.get('postalCode').setValue(billingAddressData.postalCode);
+    Object.keys(billingAddressData).forEach((key) => {
+      const control = this.shippingDataFormGroup.get(key);
+      if(control != null) {
+        control.markAsTouched();
+        control.markAsDirty();
+        control.setValue(billingAddressData[key]);
+      }
+    });
+  }
+
+  private clearForm(): void {
+    const controls = this.getAllControls();
+
+    controls.forEach((control) => {
+      control.setValue(null);
+      control.markAsPristine();
+      control.markAsUntouched();
+    });
+  }
+
+  private setDisabledStateOfForm(disabledState: boolean): void {
+    const controls = this.getAllControls();
+
+    controls.forEach((control) => {
+      if(disabledState) {
+        control.disable();
+      } else {
+        control.enable();
+      }
+    });
   }
 
   goBack(): void {
@@ -82,7 +122,12 @@ export class ShippingDataComponent implements OnChanges {
   goForward(): void {
     console.log('goForward()');
 
-    if(this.shippingDataFormGroup.valid) {
+    const useBillingAddress = this.useBillingAddressFormGroup.get('useBillingAddress').value;
+
+    console.log('goForward(): useBillingAddress = ', useBillingAddress);
+    console.log('goForward(): this.billingAddressFormGroup.valid = ', this.useBillingAddressFormGroup.valid);
+
+    if(useBillingAddress || this.shippingDataFormGroup.valid) {
       console.log('goForward(): calling submit()');
       this.submit();
     }

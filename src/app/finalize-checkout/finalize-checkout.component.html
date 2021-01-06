@@ -66,7 +66,7 @@
                             <mat-card-title>Rechnungsadresse</mat-card-title>
                         </mat-card-header>
 
-                        <mat-card-content *ngIf="checkoutData.billingAddress != undefined">
+                        <mat-card-content *ngIf="checkoutData.billingAddress != null">
                             <p>{{checkoutData.billingAddress.salutation}} {{checkoutData.billingAddress.firstName}}
                                 {{checkoutData.billingAddress.lastName}}</p>
                             <p>{{checkoutData.billingAddress.streetName}} {{checkoutData.billingAddress.streetNo}}</p>
@@ -82,7 +82,7 @@
                             <mat-card-title>Lieferadresse</mat-card-title>
                         </mat-card-header>
 
-                        <mat-card-content *ngIf="checkoutData.shippingData != undefined">
+                        <mat-card-content *ngIf="checkoutData.shippingData != null">
                             <p>{{checkoutData.shippingData.salutation}} {{checkoutData.shippingData.firstName}}
                                 {{checkoutData.shippingData.lastName}}</p>
                             <p>{{checkoutData.shippingData.streetName}} {{checkoutData.shippingData.streetNo}}</p>
@@ -99,7 +99,7 @@
                             <mat-card-title>Zahlungsart</mat-card-title>
                         </mat-card-header>
 
-                        <mat-card-content *ngIf="checkoutData.paymentData != undefined">
+                        <mat-card-content *ngIf="checkoutData.paymentData != null">
                             <p>Bezahlung per {{checkoutData.paymentData.paymentOption}}</p>
                         </mat-card-content>
                     </mat-card>
