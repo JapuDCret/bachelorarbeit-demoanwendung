@@ -1,10 +1,12 @@
 # Demoanwendung
 
- - Fehlerszenarien: [Fehlerszenarien.md](Fehlerszenarien.md)
- - Ausarbeitung: https://github.com/JapuDCret/bachelorarbeit
- - Vorgaben:
-   - User-Stories (Gherkin): https://github.com/cwansart/warenkorb-gherkin
-   - Prototyp: https://cwansart.github.io/warenkorb-prototyp/
+- Fehlerszenarien: [Fehlerszenarien.md](Fehlerszenarien.md)
+- Ausarbeitung: https://github.com/JapuDCret/bachelorarbeit
+- Vorgaben:
+  - User-Stories (Gherkin): https://github.com/cwansart/warenkorb-gherkin
+  - Prototyp: https://cwansart.github.io/warenkorb-prototyp/
+- Backend:
+  - localization-svc: https://github.com/JapuDCret/ba-demo-localization-svc
 
 # Angular Generated Info
 
