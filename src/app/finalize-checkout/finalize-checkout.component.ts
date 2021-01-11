@@ -3,12 +3,13 @@ import { FormBuilder } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 
 import { from, Observable } from 'rxjs';
+import { delay, mergeMap, reduce } from 'rxjs/operators';
 
 import { MatTable } from '@angular/material/table';
 
 import { CheckoutData } from 'src/app/checkout/checkout.component';
-import { ShoppingCartDataSource, ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
-import { delay, mergeMap, reduce } from 'rxjs/operators';
+import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
+import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
 
 @Component({
   selector: 'app-finalize-checkout',
@@ -17,7 +18,6 @@ import { delay, mergeMap, reduce } from 'rxjs/operators';
 })
 export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable) table: MatTable<ShoppingCartItem>;
-  dataSource: ShoppingCartDataSource;
   totalSum$: Observable<number>;
   
   finalizeCheckoutFormGroup = this.fb.group({
@@ -29,10 +29,9 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['imagePath', 'amount', 'name', 'price'];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private dataSource: ShoppingCartDataSource) {}
 
   ngOnInit() {
-    this.dataSource = new ShoppingCartDataSource();
   }
 
   ngAfterViewInit() {

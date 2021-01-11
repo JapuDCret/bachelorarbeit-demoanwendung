@@ -3,12 +3,7 @@
     min-width: 600px;
 }
 
-.stepContent {
-    display: flex;
-    flex-direction: column;
-}
-
-.stepContent *:not(:first-child) {
+::ng-deep .mat-horizontal-content-container {
     margin-top: 1rem;
 }
 

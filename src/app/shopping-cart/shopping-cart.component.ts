@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { MatTable } from '@angular/material/table';
@@ -6,7 +6,8 @@ import { MatTable } from '@angular/material/table';
 import { from, Observable } from 'rxjs';
 import { delay, mergeMap, reduce } from 'rxjs/operators';
 
-import { ShoppingCartDataSource, ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
+import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
+import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
 
 export interface CheckoutShopItem {
   itemId: number;
@@ -26,7 +27,6 @@ export interface CheckoutShoppingCart {
 })
 export class ShoppingCartComponent implements AfterViewInit, OnInit {
   @ViewChild(MatTable) table: MatTable<ShoppingCartItem>;
-  dataSource: ShoppingCartDataSource;
   totalSum$: Observable<number>;
 
   shoppingCartFormGroup = this.fb.group({
@@ -37,10 +37,9 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['imagePath', 'amount', 'name', 'price'];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private dataSource: ShoppingCartDataSource) {}
 
   ngOnInit() {
-    this.dataSource = new ShoppingCartDataSource();
   }
 
   ngAfterViewInit() {

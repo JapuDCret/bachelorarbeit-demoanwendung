@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -28,7 +29,7 @@ import { ShippingDataComponent } from 'src/app/shipping-data/shipping-data.compo
 import { PaymentDataComponent } from 'src/app/payment-data/payment-data.component';
 import { FinalizeCheckoutComponent } from 'src/app/finalize-checkout/finalize-checkout.component';
 import { ProgressContainerComponent } from 'src/app/progress-container/progress-container.component';
-import { ShoppingCartTableComponent } from './shopping-cart-table/shopping-cart-table.component';
+import { ShoppingCartTableComponent } from 'src/app/shopping-cart-table/shopping-cart-table.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,7 @@ import { ShoppingCartTableComponent } from './shopping-cart-table/shopping-cart-
     AppRoutingModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    OverlayModule,
+    HttpClientModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
@@ -58,7 +59,8 @@ import { ShoppingCartTableComponent } from './shopping-cart-table/shopping-cart-
     MatSelectModule,
     MatSortModule,
     MatStepperModule,
-    MatTableModule
+    MatTableModule,
+    OverlayModule
   ],
   providers: [],
   bootstrap: [AppComponent]

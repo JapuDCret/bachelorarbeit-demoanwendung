@@ -1,68 +1,38 @@
 import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge } from 'rxjs';
+import { Injectable } from '@angular/core';
 
-export interface ShopItem {
-  itemId: number;
-  name: string;
-  price: number;
+import { from, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+
+import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart-svc.service';
+
+export interface ShoppingCartItem extends BE_ShoppingCartItem {
   imagePath: string;
 }
 
-export interface ShoppingCartItem extends ShopItem {
-  amount: number;
-}
-
-// TODO: replace this with real data from your application
-const PRICE_TABLE: ShopItem[] = [
-  { itemId: 0, name: 'Honigmelone', price: 2.50, imagePath: '/assets/fruits/cantalope.png' },
-  { itemId: 1, name: 'Kokosnuss', price: 1.50, imagePath: '/assets/fruits/coconut.png' },
-  { itemId: 2, name: 'Trauben (grün)', price: 1.30, imagePath: '/assets/fruits/grapes-green.png' },
-  { itemId: 3, name: 'Trauben (rot)', price: 1.20, imagePath: '/assets/fruits/grapes-purple.png' },
-  { itemId: 4, name: 'Pfirsich', price: 0.60, imagePath: '/assets/fruits/peach.png' },
-  { itemId: 5, name: 'Birne', price: 0.35, imagePath: '/assets/fruits/pear.png' },
-  { itemId: 6, name: 'Ananas', price: 1.80, imagePath: '/assets/fruits/pineapple.png' },
-  { itemId: 7, name: 'Granatapfel', price: 1.40, imagePath: '/assets/fruits/pomegranate.png' },
-  { itemId: 8, name: 'Wassermelone', price: 2.20, imagePath: '/assets/fruits/watermelon.png' },
-];
+const IMAGE_MAPPING = {
+  0: '/assets/fruits/cantalope.png',
+  1: '/assets/fruits/coconut.png',
+  2: '/assets/fruits/grapes.png',
+  3: '/assets/fruits/peach.png',
+  4: '/assets/fruits/pear.png',
+  5: '/assets/fruits/pineapple.png',
+  6: '/assets/fruits/pomegranate.png',
+  7: '/assets/fruits/watermelon.png',
+};
 
 /**
  * Data source for the ShoppingCart view. This class should
  * encapsulate all logic for fetching and manipulating the displayed data
  * (including sorting, pagination, and filtering).
  */
+@Injectable({
+  providedIn: 'root',
+})
 export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
-  data: ShoppingCartItem[];
 
-  constructor() {
+  constructor(private service: ShoppingCartService) {
     super();
-
-    // generate random data
-    const randData = new Array<ShoppingCartItem>();
-
-    const numOfItems = getRndInteger(3, 6);
-    for (let i = 0; i < numOfItems; i++) {
-      let randItemId;
-      do {
-        randItemId = getRndInteger(0, 9);
-      } while (randData.find((shopItem) => {
-        return shopItem.itemId === randItemId;
-      }) != null);
-
-      const randAmount = getRndInteger(1, 4);
-
-      randData.push({
-        ...PRICE_TABLE[randItemId],
-        itemId: randItemId,
-        amount: randAmount,
-      });
-    }
-
-    this.data = randData;
-
-    console.log('constructor(): this.data = ', this.data);
   }
 
   /**
@@ -71,15 +41,22 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
    * @returns A stream of the items to be rendered.
    */
   connect(): Observable<ShoppingCartItem[]> {
-    // Combine everything that affects the rendered data into one update
-    // stream for the data-table to consume.
-    const dataMutations = [
-      observableOf(this.data)
-    ];
+    return this.getAndMapShoppingCart();
+  }
 
-    return merge(...dataMutations).pipe(map(() => {
-      return [...this.data];
-    }));
+  private getAndMapShoppingCart(): Observable<ShoppingCartItem[]> {
+    return this.service.getShoppingCart().pipe(
+      map((shoppingCart) => {
+        const mappedCartItems = shoppingCart && shoppingCart.items && shoppingCart.items.map((val) => {
+          return { ...val, imagePath: IMAGE_MAPPING[val.id] }
+        });
+
+        return mappedCartItems;
+      }),
+      tap((val) => {
+        console.log('getAndMapShoppingCart(): val = ', val);
+      })
+    );
   }
 
   /**
@@ -87,8 +64,4 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
    * any open connections or free any held resources that were set up during connect.
    */
   disconnect() { }
-}
-
-function getRndInteger(min, max) {
-  return Math.floor(Math.random() * (max - min) ) + min;
 }
