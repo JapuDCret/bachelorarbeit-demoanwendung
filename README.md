@@ -7,6 +7,8 @@
   - Prototyp: https://cwansart.github.io/warenkorb-prototyp/
 - Backend:
   - localization-svc: https://github.com/JapuDCret/ba-demo-localization-svc
+  - cart-svc: https://github.com/JapuDCret/ba-demo-cart-svc
+  - Kubernetes Settings: https://github.com/JapuDCret/ba-demo-k8s-settings
 
 # Angular Generated Info
 
