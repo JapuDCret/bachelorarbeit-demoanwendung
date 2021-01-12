@@ -22,12 +22,12 @@ export class ShoppingCartService {
 
   private readonly baseUrl = 'http://localhost:9082/data/cart';
 
-  seed: string;
+  shoppingCartId: string;
 
   constructor(private http: HttpClient) {
     console.log('constructor(): this.baseUrl = ', this.baseUrl);
 
-    this.seed = this.generateSeed();
+    this.shoppingCartId = this.generateSeed();
   }
 
   private generateSeed(): string {
@@ -41,9 +41,10 @@ export class ShoppingCartService {
   }
 
   public getShoppingCart(): Observable<BE_ShoppingCart> {
+    console.log('getShoppingCart(): requested shopping cart with id = ', this.shoppingCartId);
+
     return this.http.get<BE_ShoppingCart>(
-      this.baseUrl,
-      { params: { seed: this.seed } }
+      this.baseUrl + '/' + this.shoppingCartId
     )
     .pipe(
       tap((val) => {
