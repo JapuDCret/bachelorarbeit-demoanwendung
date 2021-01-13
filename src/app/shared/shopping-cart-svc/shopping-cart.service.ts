@@ -31,14 +31,14 @@ export class ShoppingCartService {
     private http: HttpClient,
     @Inject(APP_CONFIG) private config: AppConfig
   ) {
-    console.log('constructor(): config.apiEndpoint = ', config.backend4frontend.apiEndpoint);
+    console.log('constructor(): config.apiEndpoint = ', config.apiEndpoint);
 
-    this.cartServiceUrl = config.backend4frontend.apiEndpoint + ShoppingCartService.CART_ENDPOINT;
+    this.cartServiceUrl = config.apiEndpoint + ShoppingCartService.CART_ENDPOINT;
     console.log('constructor(): this.cartServiceUrl = ', this.cartServiceUrl);
   }
 
   public getShoppingCart(shoppingCartId: string): Observable<BE_ShoppingCart> {
-    console.log('getShoppingCart(): requested shopping cart with id = ', shoppingCartId);
+    console.log('getShoppingCart(): requesting shopping cart with id = ', shoppingCartId);
 
     return this.http.get<BE_ShoppingCart>(
       this.cartServiceUrl + '/' + shoppingCartId

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Da ist etwas schief gelaufen!</h1>
+<div mat-dialog-content>
+    <div>Wir bitten um Entschuldigung. Bei der Aktion "{{ data.action }}" ist ein Fehler aufgetreten.</div>
+    <br />
+    <div>Folgender Fehler ist aufgetreten:</div>
+    <div><textarea readonly style="width: 100%; height: 4rem; box-sizing: border-box">{{ data.message }}</textarea></div>
+</div>
+<mat-dialog-actions class="cardActions">
+    <button mat-raised-button mat-dialog-close color="accent">Schließen</button>
+    <button mat-raised-button (click)="goToTheShop()" color="primary">Zum Startseite</button>
+</mat-dialog-actions>

@@ -26,6 +26,7 @@ import { AppConfigModule } from 'src/app/app-config-module';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { BillingAddressComponent } from 'src/app/billing-address/billing-address.component';
 import { CheckoutComponent } from 'src/app/checkout/checkout.component';
+import { ErrorDialogComponent } from 'src/app/error-dialog/error-dialog.component';
 import { FinalizeCheckoutComponent } from 'src/app/finalize-checkout/finalize-checkout.component';
 import { PaymentDataComponent } from 'src/app/payment-data/payment-data.component';
 import { ProgressContainerComponent } from 'src/app/progress-container/progress-container.component';
@@ -36,14 +37,15 @@ import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.compo
 @NgModule({
   declarations: [
     AppComponent,
-    CheckoutComponent,
-    ShoppingCartComponent,
     BillingAddressComponent,
-    ShippingDataComponent,
-    PaymentDataComponent,
+    CheckoutComponent,
+    ErrorDialogComponent,
     FinalizeCheckoutComponent,
+    PaymentDataComponent,
     ProgressContainerComponent,
-    ReceiptDialogComponent
+    ReceiptDialogComponent,
+    ShippingDataComponent,
+    ShoppingCartComponent,
   ],
   imports: [
     BrowserModule,
@@ -64,7 +66,7 @@ import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.compo
     MatStepperModule,
     MatTableModule,
     OverlayModule,
-    AppConfigModule
+    AppConfigModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

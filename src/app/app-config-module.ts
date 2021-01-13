@@ -5,17 +5,11 @@ import { environment } from "src/environments/environment";
 export let APP_CONFIG = new InjectionToken<AppConfig>('app.config');
 
 export class AppConfig {
-  addressValidation: {
-    apiEndpoint: string;
-  };
-  backend4frontend: {
-    apiEndpoint: string;
-  };
+  apiEndpoint: string;
 }
 
 export const APP_DI_CONFIG: AppConfig = {
-  addressValidation: environment.addressValidation,
-  backend4frontend: environment.backend4frontend,
+  apiEndpoint: environment.apiEndpoint,
 }
 
 @NgModule({

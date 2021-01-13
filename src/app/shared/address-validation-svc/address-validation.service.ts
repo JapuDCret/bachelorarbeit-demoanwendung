@@ -26,9 +26,9 @@ export class AddressValidationService {
     private http: HttpClient,
     @Inject(APP_CONFIG) private config: AppConfig
   ) {
-    console.log('constructor(): config.addressValidation.apiEndpoint = ', config.addressValidation.apiEndpoint);
+    console.log('constructor(): config.apiEndpoint = ', config.apiEndpoint);
 
-    this.addressValidationServiceUrl = config.addressValidation.apiEndpoint + AddressValidationService.ADDRESSVALIDATION_ENDPOINT;
+    this.addressValidationServiceUrl = config.apiEndpoint + AddressValidationService.ADDRESSVALIDATION_ENDPOINT;
     console.log('constructor(): this.addressValidationServiceUrl = ', this.addressValidationServiceUrl);
   }
 

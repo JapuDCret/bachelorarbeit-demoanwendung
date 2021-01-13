@@ -75,9 +75,9 @@ export class OrderService {
     private http: HttpClient,
     @Inject(APP_CONFIG) private config: AppConfig
   ) {
-    console.log('constructor(): config.apiEndpoint = ', config.backend4frontend.apiEndpoint);
+    console.log('constructor(): config.apiEndpoint = ', config.apiEndpoint);
 
-    this.orderServiceUrl = config.backend4frontend.apiEndpoint + OrderService.ORDER_ENDPOINT;
+    this.orderServiceUrl = config.apiEndpoint + OrderService.ORDER_ENDPOINT;
     console.log('constructor(): this.orderServiceUrl = ', this.orderServiceUrl);
   }
 

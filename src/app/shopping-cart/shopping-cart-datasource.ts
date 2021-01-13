@@ -1,10 +1,11 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
+import { LocalizationService } from 'src/app/shared/localization-svc/localization.service';
 
 export interface ShoppingCart {
   shoppingCartId: string;
@@ -38,7 +39,10 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
 
   readonly shoppingCartId: string;
 
-  constructor(private service: ShoppingCartService) {
+  constructor(
+    private cartService: ShoppingCartService,
+    private localizationService: LocalizationService
+  ) {
     super();
 
     this.shoppingCartId = this.generateSeed();
@@ -64,10 +68,14 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
   }
 
   private getAndMapShoppingCart(shoppingCartId: string): Observable<ShoppingCartItem[]> {
-    return this.service.getShoppingCart(shoppingCartId).pipe(
-      map((shoppingCart) => {
+    const translations$ = this.localizationService.getTranslations();
+    const shoppingCart$ = this.cartService.getShoppingCart(shoppingCartId);
+    
+    return combineLatest(translations$, shoppingCart$)
+    .pipe(
+      map(([translations, shoppingCart]) => {
         const mappedCartItems = shoppingCart && shoppingCart.items && shoppingCart.items.map((val) => {
-          return { ...val, imagePath: IMAGE_MAPPING[val.id] }
+          return { ...val, imagePath: IMAGE_MAPPING[val.id], name: translations["de"][val.translationKey] }
         });
 
         return mappedCartItems;

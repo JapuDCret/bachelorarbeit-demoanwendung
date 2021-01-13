@@ -6,11 +6,13 @@ import { from, Observable } from 'rxjs';
 import { delay, mergeMap, reduce } from 'rxjs/operators';
 
 import { MatTable } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 
 import { CheckoutData } from 'src/app/checkout/checkout.component';
 import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
 import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
 import { OrderService, Receipt } from 'src/app/shared/order-svc/order.service';
+import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 
 @Component({
   selector: 'app-finalize-checkout',
@@ -34,6 +36,7 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
+    private dialog: MatDialog,
     private cartDataSource: ShoppingCartDataSource,
     private orderService: OrderService,
   ) {}
@@ -81,7 +84,7 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
         rechnungData: this.checkoutData.paymentData.rechnungData,
         lastschriftData: this.checkoutData.paymentData.lastschriftData,
         paypalData: this.checkoutData.paymentData.paypalData,
-        kreditkartenData: {
+        kreditkartenData: this.checkoutData.paymentData.kreditkartenData && {
           inhaber: this.checkoutData.paymentData.kreditkartenData.inhaber,
           nummer: this.checkoutData.paymentData.kreditkartenData.nummer,
           cvcCode: padNumber(this.checkoutData.paymentData.kreditkartenData.cvcCode, 3),
@@ -95,6 +98,17 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
         console.log('submit(): receipt = ', receipt);
 
         this.receipt.emit(receipt);
+      },
+      err => {
+        console.log('submit(): err = ', err);
+
+        this.dialog.open(ErrorDialogComponent, {
+          data: {
+            action: 'Bestellung ausführen',
+            error: err.error,
+            message: err.message,
+          },
+        });
       }
     );
   }
