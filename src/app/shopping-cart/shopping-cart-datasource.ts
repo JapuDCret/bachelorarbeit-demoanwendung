@@ -1,10 +1,15 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
 
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart-svc.service';
+import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
+
+export interface ShoppingCart {
+  shoppingCartId: string;
+  items: ShoppingCartItem[];
+}
 
 export interface ShoppingCartItem extends BE_ShoppingCartItem {
   imagePath: string;
@@ -31,8 +36,22 @@ const IMAGE_MAPPING = {
 })
 export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
 
+  readonly shoppingCartId: string;
+
   constructor(private service: ShoppingCartService) {
     super();
+
+    this.shoppingCartId = this.generateSeed();
+  }
+
+  private generateSeed(): string {
+    var result           = '';
+    var characters       = 'abcdef0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < 8; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   }
 
   /**
@@ -41,11 +60,11 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
    * @returns A stream of the items to be rendered.
    */
   connect(): Observable<ShoppingCartItem[]> {
-    return this.getAndMapShoppingCart();
+    return this.getAndMapShoppingCart(this.shoppingCartId);
   }
 
-  private getAndMapShoppingCart(): Observable<ShoppingCartItem[]> {
-    return this.service.getShoppingCart().pipe(
+  private getAndMapShoppingCart(shoppingCartId: string): Observable<ShoppingCartItem[]> {
+    return this.service.getShoppingCart(shoppingCartId).pipe(
       map((shoppingCart) => {
         const mappedCartItems = shoppingCart && shoppingCart.items && shoppingCart.items.map((val) => {
           return { ...val, imagePath: IMAGE_MAPPING[val.id] }

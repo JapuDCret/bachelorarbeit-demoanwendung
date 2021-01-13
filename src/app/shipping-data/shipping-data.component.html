@@ -62,9 +62,9 @@
                     </div>
                     <div class="col-3">
                         <mat-form-field class="full-width">
-                            <input matInput placeholder="Nr." formControlName="streetNo"
+                            <input matInput placeholder="Nr." formControlName="streetNumber"
                                 name="shippingDataStreetNumber" [readonly]="useBillingAddress.checked">
-                            <mat-error *ngIf="shippingDataFormGroup.controls['streetNo'].hasError('required')">
+                            <mat-error *ngIf="shippingDataFormGroup.controls['streetNumber'].hasError('required')">
                                 Straßenummer wird <strong>benötigt</strong>
                             </mat-error>
                         </mat-form-field>

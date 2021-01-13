@@ -109,7 +109,7 @@ export class PaymentDataComponent {
   }
 
   private submit(): void {
-    console.log('onSubmit()');
+    console.log('submit()');
     
     const checkoutPaymentData: CheckoutPaymentData = {
       paymentOption: this.paymentDataFormGroup.get('paymentOptions').value,

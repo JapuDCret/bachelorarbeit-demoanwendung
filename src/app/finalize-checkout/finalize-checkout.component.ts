@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 
@@ -10,6 +10,7 @@ import { MatTable } from '@angular/material/table';
 import { CheckoutData } from 'src/app/checkout/checkout.component';
 import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
 import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
+import { OrderService, Receipt } from 'src/app/shared/order-svc/order.service';
 
 @Component({
   selector: 'app-finalize-checkout',
@@ -19,25 +20,33 @@ import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource
 export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable) table: MatTable<ShoppingCartItem>;
   totalSum$: Observable<number>;
+  shoppingCartId$: string;
   
   finalizeCheckoutFormGroup = this.fb.group({
   });
 
   @Input('stepper') stepper: MatStepper;
   @Input('checkoutData') checkoutData: CheckoutData;
+  @Output() receipt = new EventEmitter<Receipt>();
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['imagePath', 'amount', 'name', 'price'];
 
-  constructor(private fb: FormBuilder, private dataSource: ShoppingCartDataSource) {}
+  constructor(
+    private fb: FormBuilder,
+    private cartDataSource: ShoppingCartDataSource,
+    private orderService: OrderService,
+  ) {}
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
-    this.table.dataSource = this.dataSource;
+    this.table.dataSource = this.cartDataSource;
 
-    this.totalSum$ = this.dataSource.connect()
+    const shoppingCart$ = this.cartDataSource.connect();
+
+    this.totalSum$ = shoppingCart$
       .pipe(
         delay(0), // fix ExpressionChangedAfterItHasBeenCheckedError
         mergeMap((cartItems) => from(cartItems).pipe(
@@ -62,12 +71,35 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   }
 
   private submit(): void {
-    console.log('onSubmit()');
+    console.log('submit()');
 
-    // TODO: submit data
-    
-    window.setTimeout(() => {
-      this.stepper.next();
-    }, 250);
+    this.orderService.order({
+      shoppingCartId: this.cartDataSource.shoppingCartId,
+      billingAddress: this.checkoutData.billingAddress,
+      shippingData: this.checkoutData.shippingData,
+      paymentData: {
+        rechnungData: this.checkoutData.paymentData.rechnungData,
+        lastschriftData: this.checkoutData.paymentData.lastschriftData,
+        paypalData: this.checkoutData.paymentData.paypalData,
+        kreditkartenData: {
+          inhaber: this.checkoutData.paymentData.kreditkartenData.inhaber,
+          nummer: this.checkoutData.paymentData.kreditkartenData.nummer,
+          cvcCode: padNumber(this.checkoutData.paymentData.kreditkartenData.cvcCode, 3),
+          gueltigBisMonat: padNumber(this.checkoutData.paymentData.kreditkartenData.gueltigBisMonat, 2),
+          gueltigBisJahr: padNumber(this.checkoutData.paymentData.kreditkartenData.gueltigBisJahr, 2)
+        }
+      },
+    })
+    .subscribe(
+      (receipt) => {
+        console.log('submit(): receipt = ', receipt);
+
+        this.receipt.emit(receipt);
+      }
+    );
   }
+}
+
+function padNumber(num: number, size: number): string {
+  return ('000000000' + num).substr(-size);
 }

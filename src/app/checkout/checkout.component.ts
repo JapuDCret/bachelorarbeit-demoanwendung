@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
+import { MatDialog } from '@angular/material/dialog';
+
+import { Receipt } from 'src/app/shared/order-svc/order.service';
 import { CheckoutShoppingCart } from 'src/app/shopping-cart/shopping-cart.component';
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
 import { CheckoutShippingData } from 'src/app/shipping-data/shipping-data.component';
 import { CheckoutPaymentData } from 'src/app/payment-data/payment-data.component';
+import { ReceiptDialogComponent } from 'src/app/receipt-dialog/receipt-dialog.component';
 
 export interface CheckoutData {
   shoppingCart: null | CheckoutShoppingCart;
@@ -32,7 +36,9 @@ export class CheckoutComponent implements OnInit {
     paymentData: null
   }
 
-  constructor(private fb: FormBuilder) { }
+  receiptData: Receipt = null;
+
+  constructor(private fb: FormBuilder, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.cartFormGroup = this.fb.group({});
@@ -64,5 +70,16 @@ export class CheckoutComponent implements OnInit {
     console.log('onPaymentDataSubmit(): data = ', data);
     
     this.checkoutData.paymentData = data;
+  }
+
+  onOrderReceipt(data: Receipt): void {
+    console.log('onOrderReceipt(): data = ', data);
+
+    this.receiptData = data;
+    
+    this.dialog.open(ReceiptDialogComponent, {
+      data: this.receiptData,
+      disableClose: true,
+    });
   }
 }

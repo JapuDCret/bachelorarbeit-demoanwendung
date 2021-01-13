@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>Bestellbestätigung</h1>
+<div mat-dialog-content>
+    Vielen Dank für Ihre Bestellung!
+    <ul>
+        <li>
+            Ihre Bestellung von <span>{{ data.itemCount }}</span> Artikeln wurde aufgenommen und wird unter der Nummer <span>#{{ data.orderId }}</span> bearbeitet.
+        </li>
+        <li>
+            In Kürze werden wir <span>{{ data.total | number:'1.2'}} €</span> über Ihre gewählte Rechnungsart <span>{{ data.paymentType }}</span> einholen.
+        </li>
+        <li>
+            Die Artikel werden in vorraussichtlich in 3-5 Werktagen Ihnen zugestellt, unter Berücksichtigung folgender Adresse:
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>Lieferadresse</mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <p>{{data.shippingData.salutation}} {{data.shippingData.firstName}} {{data.shippingData.lastName}}</p>
+                    <p>{{data.shippingData.streetName}} {{data.shippingData.streetNumber}}</p>
+                    <p>{{data.shippingData.postalCode}} {{data.shippingData.city}}</p>
+                </mat-card-content>
+            </mat-card>
+        </li>
+    </ul>
+</div>
+<mat-dialog-actions class="cardActions">
+    <p></p>
+    <button mat-raised-button (click)="goToTheShop()" color="primary">Zum Shop</button>
+</mat-dialog-actions>

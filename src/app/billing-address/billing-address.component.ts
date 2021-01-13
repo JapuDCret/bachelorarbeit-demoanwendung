@@ -7,7 +7,7 @@ export interface CheckoutBillingAddress {
   firstName: string;
   lastName: string;
   streetName: string;
-  streetNo: number;
+  streetNumber: number;
   city: string;
   postalCode: number;
   email: string;
@@ -24,7 +24,7 @@ export class BillingAddressComponent {
     firstName: [null, Validators.required],
     lastName: [null, Validators.required],
     streetName: [null, Validators.required],
-    streetNo: [null, Validators.required],
+    streetNumber: [null, Validators.required],
     city: [null, Validators.required],
     postalCode: [null, Validators.compose([
       Validators.required, Validators.minLength(5), Validators.maxLength(5)])
@@ -64,7 +64,7 @@ export class BillingAddressComponent {
       firstName: this.billingAddressFormGroup.get('firstName').value,
       lastName: this.billingAddressFormGroup.get('lastName').value,
       streetName: this.billingAddressFormGroup.get('streetName').value,
-      streetNo: this.billingAddressFormGroup.get('streetNo').value,
+      streetNumber: this.billingAddressFormGroup.get('streetNumber').value,
       city: this.billingAddressFormGroup.get('city').value,
       postalCode: this.billingAddressFormGroup.get('postalCode').value,
       email: this.billingAddressFormGroup.get('email').value

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ShoppingCartTableComponent } from './shopping-cart-table.component';
+import { ReceiptDialogComponent } from './receipt-dialog.component';
 
-describe('ShoppingCartTableComponent', () => {
-  let component: ShoppingCartTableComponent;
-  let fixture: ComponentFixture<ShoppingCartTableComponent>;
+describe('ReceiptDialogComponent', () => {
+  let component: ReceiptDialogComponent;
+  let fixture: ComponentFixture<ReceiptDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ShoppingCartTableComponent ]
+      declarations: [ ReceiptDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ShoppingCartTableComponent);
+    fixture = TestBed.createComponent(ReceiptDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

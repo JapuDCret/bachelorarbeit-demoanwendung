@@ -63,7 +63,7 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   goForward(): void {
     console.log('goForward()');
 
-    /** this will submit the form and eventually call #onSubmit() */
+    /** this will submit the form and eventually call #submit() */
     console.log('goForward(): calling submit()');
     this.submit();
   }

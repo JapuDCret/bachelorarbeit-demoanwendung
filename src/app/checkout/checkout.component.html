@@ -25,7 +25,7 @@
                 <mat-step [stepControl]="step5.finalizeCheckoutFormGroup">
                     <ng-template matStepLabel>Bestellung abschließen</ng-template>
                     
-                    <app-finalize-checkout #step5 [stepper]="stepper" [checkoutData]="checkoutData"></app-finalize-checkout>
+                    <app-finalize-checkout #step5 [stepper]="stepper" [checkoutData]="checkoutData" (receipt)="onOrderReceipt($event)"></app-finalize-checkout>
                 </mat-step>
             </mat-horizontal-stepper>
         </mat-card-content>

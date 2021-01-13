@@ -11,7 +11,7 @@ export interface CheckoutShippingData {
   firstName: string;
   lastName: string;
   streetName: string;
-  streetNo: number;
+  streetNumber: number;
   city: string;
   postalCode: number;
 }
@@ -31,7 +31,7 @@ export class ShippingDataComponent implements OnChanges {
     firstName: [{ value: null}, Validators.required],
     lastName: [{ value: null}, Validators.required],
     streetName: [{ value: null}, Validators.required],
-    streetNo: [{ value: null}, Validators.required],
+    streetNumber: [{ value: null}, Validators.required],
     city: [{ value: null}, Validators.required],
     postalCode: [{ value: null}, Validators.compose([
       Validators.required, Validators.minLength(5), Validators.maxLength(5)])
@@ -74,7 +74,7 @@ export class ShippingDataComponent implements OnChanges {
       this.shippingDataFormGroup.get('firstName'),
       this.shippingDataFormGroup.get('lastName'),
       this.shippingDataFormGroup.get('streetName'),
-      this.shippingDataFormGroup.get('streetNo'),
+      this.shippingDataFormGroup.get('streetNumber'),
       this.shippingDataFormGroup.get('city'),
       this.shippingDataFormGroup.get('postalCode'),
     ];
@@ -134,14 +134,14 @@ export class ShippingDataComponent implements OnChanges {
   }
 
   private submit(): void {
-    console.log('onSubmit()');
+    console.log('submit()');
     
     const checkoutShoppingData: CheckoutShippingData = {
       salutation: this.shippingDataFormGroup.get('salutation').value,
       firstName: this.shippingDataFormGroup.get('firstName').value,
       lastName: this.shippingDataFormGroup.get('lastName').value,
       streetName: this.shippingDataFormGroup.get('streetName').value,
-      streetNo: this.shippingDataFormGroup.get('streetNo').value,
+      streetNumber: this.shippingDataFormGroup.get('streetNumber').value,
       city: this.shippingDataFormGroup.get('city').value,
       postalCode: this.shippingDataFormGroup.get('postalCode').value
     };
