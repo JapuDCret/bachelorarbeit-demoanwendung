@@ -1,4 +1,9 @@
 export const environment = {
     production: true,
-    apiEndpoint: 'http://backend4frontend:9080',
+    addressValidation: {
+        apiEndpoint: 'http://address-validation-svc:9083',
+    },
+    backend4frontend: {
+        apiEndpoint: 'http://locbackend4frontendalhost:54985',
+    }
 };

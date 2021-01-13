@@ -4,7 +4,12 @@
 
 export const environment = {
     production: false,
-    apiEndpoint: 'http://localhost:54985',
+    addressValidation: {
+        apiEndpoint: 'http://localhost:57019',
+    },
+    backend4frontend: {
+        apiEndpoint: 'http://localhost:54985',
+    }
 };
 
 /*

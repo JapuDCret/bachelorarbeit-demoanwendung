@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
+import { AddressValidationService } from '../shared/address-validation-svc/address-validation.service';
 
 export interface CheckoutBillingAddress {
   salutation: string;
@@ -37,7 +38,9 @@ export class BillingAddressComponent {
   @Input('stepper') stepper: MatStepper;
   @Output() submitted = new EventEmitter<CheckoutBillingAddress>();
 
-  constructor(private fb: FormBuilder) { }
+  addressValidationResult: string = null;
+
+  constructor(private fb: FormBuilder, private addressValidationService: AddressValidationService) { }
 
   goBack(): void {
     console.log('goBack()');
@@ -58,6 +61,8 @@ export class BillingAddressComponent {
 
   private submit(): void {
     console.log('submit()');
+
+    this.addressValidationResult = null;
     
     const checkoutBillingAddress: CheckoutBillingAddress = {
       salutation: this.billingAddressFormGroup.get('salutation').value,
@@ -65,17 +70,52 @@ export class BillingAddressComponent {
       lastName: this.billingAddressFormGroup.get('lastName').value,
       streetName: this.billingAddressFormGroup.get('streetName').value,
       streetNumber: this.billingAddressFormGroup.get('streetNumber').value,
-      city: this.billingAddressFormGroup.get('city').value,
       postalCode: this.billingAddressFormGroup.get('postalCode').value,
+      city: this.billingAddressFormGroup.get('city').value,
       email: this.billingAddressFormGroup.get('email').value
     };
 
     // console.log('submit(): checkoutBillingAddress = ', checkoutBillingAddress);
 
-    this.submitted.emit(checkoutBillingAddress);
+    this.addressValidationService.validateAddress({ ...checkoutBillingAddress })
+      .subscribe(
+        res => {
+          console.log('validateAddress.subscribe(): res = ', res);
 
-    window.setTimeout(() => {
-      this.stepper.next();
-    }, 250);
+          this.submitted.emit(checkoutBillingAddress);
+      
+          this.stepper.next();
+        },
+        err => {
+          console.log('validateAddress.subscribe(): err = ', err);
+
+          if(err.error && err.error.invalidField === 'streetName') {
+            this.addressValidationResult = 'Der angegebene Straßenname ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
+            this.billingAddressFormGroup.get('streetName').setErrors({
+              valid: 'Ungültige Eingabe'
+            });
+          } else if(err.error && err.error.invalidField === 'streetNumber') {
+            this.addressValidationResult = 'Die angegebene Hausnummer ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
+            this.billingAddressFormGroup.get('streetNumber').setErrors({
+              valid: 'Ungültige Eingabe'
+            });
+          } else if(err.error && err.error.invalidField === 'postalCode') {
+            this.addressValidationResult = 'Die angegebene Postleitzahl ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
+            this.billingAddressFormGroup.get('postalCode').setErrors({
+              valid: 'Ungültige Eingabe'
+            });
+          } else if(err.error && err.error.invalidField === 'city') {
+            this.addressValidationResult = 'Die angegebene Stadt ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
+            this.billingAddressFormGroup.get('city').setErrors({
+              valid: 'Ungültige Eingabe'
+            });
+          } else {
+            this.addressValidationResult = 'Die angegebene Adresse ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
+          }
+
+          this.billingAddressFormGroup.updateValueAndValidity();
+        }
+      );
+
   }
 }

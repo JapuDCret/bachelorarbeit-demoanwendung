@@ -31,9 +31,9 @@ export class ShoppingCartService {
     private http: HttpClient,
     @Inject(APP_CONFIG) private config: AppConfig
   ) {
-    console.log('constructor(): config.apiEndpoint = ', config.apiEndpoint);
+    console.log('constructor(): config.apiEndpoint = ', config.backend4frontend.apiEndpoint);
 
-    this.cartServiceUrl = config.apiEndpoint + ShoppingCartService.CART_ENDPOINT;
+    this.cartServiceUrl = config.backend4frontend.apiEndpoint + ShoppingCartService.CART_ENDPOINT;
     console.log('constructor(): this.cartServiceUrl = ', this.cartServiceUrl);
   }
 

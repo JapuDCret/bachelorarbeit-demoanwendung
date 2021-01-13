@@ -86,6 +86,14 @@
                     </mat-form-field>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col">
+                    <mat-error *ngIf="addressValidationResult != null">
+                        <strong>{{addressValidationResult}}</strong>
+                    </mat-error>
+                </div>
+            </div>
         </mat-card-content>
 
         <mat-card-actions class="cardActions">
