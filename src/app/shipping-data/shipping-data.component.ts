@@ -38,6 +38,8 @@ export class ShippingDataComponent implements OnChanges {
     ]
   });
 
+  loading: boolean = false;
+
   @Input('stepper') stepper: MatStepper;
   @Input('billingAddressData') billingAddressData: null | CheckoutBillingAddress;
   @Output() submitted = new EventEmitter<CheckoutShippingData>();
@@ -148,9 +150,13 @@ export class ShippingDataComponent implements OnChanges {
 
     // console.log('submit(): checkoutShoppingData = ', checkoutShoppingData);
 
+    this.loading = true;
+
     this.submitted.emit(checkoutShoppingData);
     
     window.setTimeout(() => {
+      this.loading = false;
+
       this.stepper.next();
     }, 250);
   }

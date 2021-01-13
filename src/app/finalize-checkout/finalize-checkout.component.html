@@ -109,7 +109,7 @@
 
         <mat-card-actions class="cardActions">
             <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
-            <button mat-raised-button (click)="goForward()" color="primary" type="submit">Kostenpflichtig
+            <button mat-raised-button (click)="goForward()" color="primary" type="submit" [class.spinner]="loading" [disabled]="loading">Kostenpflichtig
                 bestellen</button>
         </mat-card-actions>
     </mat-card>

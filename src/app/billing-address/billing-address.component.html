@@ -98,7 +98,7 @@
 
         <mat-card-actions class="cardActions">
             <button mat-raised-button (click)="goBack()" color="accent">Zurück</button>
-            <button mat-raised-button (click)="goForward()" color="primary">Weiter</button>
+            <button mat-raised-button (click)="goForward()" color="primary" [class.spinner]="loading" [disabled]="loading">Weiter</button>
         </mat-card-actions>
     </mat-card>
 </form>

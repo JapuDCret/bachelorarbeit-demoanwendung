@@ -66,6 +66,8 @@ export class PaymentDataComponent {
     ])],
   });
 
+  loading: boolean = false;
+
   @Input('stepper') stepper: MatStepper;
   @Output() submitted = new EventEmitter<CheckoutPaymentData>();
 
@@ -132,9 +134,13 @@ export class PaymentDataComponent {
 
     // console.log('submit(): checkoutPaymentData = ', checkoutPaymentData);
 
+    this.loading = true;
+
     this.submitted.emit(checkoutPaymentData);
     
     window.setTimeout(() => {
+      this.loading = false;
+
       this.stepper.next();
     }, 250);
   }

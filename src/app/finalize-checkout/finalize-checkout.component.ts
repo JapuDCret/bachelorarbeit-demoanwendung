@@ -23,6 +23,8 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable) table: MatTable<ShoppingCartItem>;
   totalSum$: Observable<number>;
   shoppingCartId$: string;
+
+  loading: boolean = false;
   
   finalizeCheckoutFormGroup = this.fb.group({
   });
@@ -76,6 +78,8 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   private submit(): void {
     console.log('submit()');
 
+    this.loading = true;
+
     this.orderService.order({
       shoppingCartId: this.cartDataSource.shoppingCartId,
       billingAddress: this.checkoutData.billingAddress,
@@ -97,10 +101,14 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
       (receipt) => {
         console.log('submit(): receipt = ', receipt);
 
+        this.loading = false;
+
         this.receipt.emit(receipt);
       },
       err => {
         console.log('submit(): err = ', err);
+
+        this.loading = false;
 
         this.dialog.open(ErrorDialogComponent, {
           data: {

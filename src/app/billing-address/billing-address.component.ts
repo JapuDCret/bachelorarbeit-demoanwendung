@@ -35,6 +35,8 @@ export class BillingAddressComponent {
     ],
   });
 
+  loading: boolean = false;
+
   @Input('stepper') stepper: MatStepper;
   @Output() submitted = new EventEmitter<CheckoutBillingAddress>();
 
@@ -77,10 +79,14 @@ export class BillingAddressComponent {
 
     // console.log('submit(): checkoutBillingAddress = ', checkoutBillingAddress);
 
+    this.loading = true;
+
     this.addressValidationService.validateAddress({ ...checkoutBillingAddress })
       .subscribe(
         res => {
           console.log('validateAddress.subscribe(): res = ', res);
+
+          this.loading = false;
 
           this.submitted.emit(checkoutBillingAddress);
       
@@ -88,6 +94,8 @@ export class BillingAddressComponent {
         },
         err => {
           console.log('validateAddress.subscribe(): err = ', err);
+
+          this.loading = false;
 
           if(err.error && err.error.invalidField === 'streetName') {
             this.addressValidationResult = 'Der angegebene Straßenname ist ungültig, bitte korrigieren Sie Ihre Eingaben.';

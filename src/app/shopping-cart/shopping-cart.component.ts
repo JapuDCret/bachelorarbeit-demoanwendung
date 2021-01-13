@@ -28,6 +28,9 @@ export interface CheckoutShoppingCart {
 export class ShoppingCartComponent implements AfterViewInit, OnInit {
   @ViewChild(MatTable) table: MatTable<ShoppingCartItem>;
   totalSum$: Observable<number>;
+  itemCount: number;
+
+  loading: boolean = false;
 
   shoppingCartFormGroup = this.fb.group({
   });
@@ -45,12 +48,21 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     this.table.dataSource = this.dataSource;
 
-    this.totalSum$ = this.dataSource.connect()
+    const shoppingCart$ = this.dataSource.connect();
+
+    this.totalSum$ = shoppingCart$
       .pipe(
         delay(0), // fix ExpressionChangedAfterItHasBeenCheckedError
         mergeMap((cartItems) => from(cartItems).pipe(
           reduce<ShoppingCartItem, number>((totalPrice, cartItem) => (cartItem.amount * cartItem.price) + totalPrice, 0)
         ))
+      );
+
+    shoppingCart$
+      .subscribe(
+        (cartItems) => {
+          this.itemCount = cartItems.length
+        }
       );
   }
 
@@ -71,6 +83,12 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   private submit(): void {
     console.log('submit()');
 
-    this.stepper.next();
+    this.loading = true;
+
+    window.setTimeout(() => {
+      this.loading = false;
+
+      this.stepper.next();
+    }, 2000 * this.itemCount);
   }
 }
