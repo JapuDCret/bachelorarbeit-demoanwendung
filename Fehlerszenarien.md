@@ -4,28 +4,57 @@ Die Demoanwendung soll beispielhaft eine fehlerbehaftete Webanwendung darstellen
 
 ## Szenarien
 
-1. "Lange Verarbeitung" (Vorschlag)
+### "Keine Übersetzungen"
 
-    Beim Absenden des Formulars auf der Seite "Warenkorb", kommt es zu einer unerwünschten Wartezeit (von min. 5s).
-    - Dies soll eine ineffiziente Verarbeitung simulieren
+- Problem: Nutzer berichten, dass manchmal die Webanwendung beim Start nicht funktioniert (es werden keine Daten im Warenkorb angezeigt).
 
-2. "Serverfehler bei Adressüberprüfung" (Vorschlag)
+- Ursache: Einer der "localization-svc" Pods hat eine defekte Konfiguration.
 
-    Beim Absenden des Formulars auf der Seite "Rechnungsadresse" sowie "Lieferadresse", soll die Adressprüfung für unbekannte Eingaben fehlschlagen.
-    - Dies kann durch leicht falsche Eingaben des Nutzers passieren (bspw. "Gießen" anstelle von "Giessen")
+### "Gültige Straßen sind ungültig"
 
-3. "PayPal Eingaben werden nicht validiert" (Vorschlag)
+- Problem: Nutzer berichten, dass Ihr Straßenname nicht eingeben werden kann. Beispielsweise die Eingabe "Ährenweg" führt zu einem Fehler.
+
+- Ursache: Der "address-validation-svc" validiert Straßen mit dem Regex `[a-zA-Z\,\-\ ]+`, welches keine gängigen Sonderzeichn (ä ,ö ,ü, ß) erlaubt.
+
+### "Gültige Hausnummern sind ungültig"
+
+- Problem: Nutzer berichten, dass Hausnummern die nicht nur aus Zahlen bestehen zum Fehler führen.
+
+- Ursache: Der "address-validation-svc" validiert Hausnummern als Zahl und schlägt im o.g. Fall in der Konvertierung fehl.
+
+### "Gültige Städte sind ungültig"
+
+- Problem: Nutzer aus Gießen berichten, dass Sie das Formular zur Rechnungsadresse nicht ausfüllen können
+
+- Ursache: Der "address-validation-svc" meldet die Stadt "Gießen" als ungültig, weil sie nicht in der lokalen Tabelle vorhanden ist.
+
+### "Ungültige Adressen sind gültig"
+
+- Problem: Nutzer können in den Lieferdaten ungültige Eingaben tätigen und absenden, bei der Bestellaufgabe kommt es zu einem Fehler.
+
+- Ursache: Das Frontend überprüft lediglich die Rechnungsadresse, aber nicht die Lieferadresse
+
+### "Vor- und Nachnamen werden abgeschnitten"
+
+- Problem: Nutzer berichten, dass in der Bestellbestätigung Ihre Vor- und Nachnamen abgeschnitten dargestellt werden.
+
+- Ursache: Der "order-svc" begrenzt den Vor- sowie den Nachnamen auf 20 Zeichen.
+
+### "Falsche Zahlungsart"
+
+- Problem: Nutzer berichten, dass in der Bestellbestätigung die falsche Zahlungsart angezeigt wird. In der Bestellübersicht wurde jedoch die korrekte Zahlungsart angezeigt.
+
+- Ursache: Das Frontend sendet alle Formulardaten an "order-svc", dieser aber an, dass alle nicht ausgewählten Formulare `null` sind.
+
+### "Lange Verarbeitung"
+
+- Problem: Beim Absenden des Formulars auf der Seite "Warenkorb" kommt es zu einer unerwünschten Wartezeit (von min. 6-10s).
+
+- Ursache: Dies ist eine simulierte Wartezeit im Frontend je nach Anzahl der Positionen, um eine ineffiziente Verarbeitung nachzuahmen.
+
+
+## Vorschläge
+
+1. "PayPal Eingaben werden nicht validiert"
 
     Beim Formular "Zahlungsdaten" wird die Validierung für das Unterformular zur Zahlungsart PayPal ignoriert.
-
-4. "Falsches Datenmodell" (Vorschlag)
-
-    Beim Formular "Zahlungsdaten" lassen sich unterschiedliche Daten je nach Zahlungsart eingeben.
-    Werden Daten für zwei Zahlungsarten ausgefüllt, so sollen beide Datensätze an das Backend gesendet werden. Dies führt im Backend zu einem Fehler.
-    - Dies soll einen Edge-Case repräsentieren, der nicht berücktsichtigt worden ist.
-
-5. "Teilweise defekte Instanzen" (Vorschlag)
-
-    Es soll ein Lokalisierungsdienst hinzugenommen werden, der verteilt als Cluster läuft.
-    Eine Instanz im Cluster soll fehlerbehaftet sein (es fehlt eine Konfigurationsdatei o. Ä.).
-    - Ssomit ist dieser Fehler nur gut über Tracing identifizierbar
