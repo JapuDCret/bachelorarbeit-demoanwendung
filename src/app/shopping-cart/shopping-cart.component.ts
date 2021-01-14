@@ -1,10 +1,14 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+
 import { FormBuilder } from '@angular/forms';
+
 import { MatStepper } from '@angular/material/stepper';
 import { MatTable } from '@angular/material/table';
 
 import { from, Observable } from 'rxjs';
 import { delay, mergeMap, reduce } from 'rxjs/operators';
+
+import { NGXLogger } from 'ngx-logger';
 
 import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
 import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
@@ -40,7 +44,11 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['imagePath', 'amount', 'name', 'price'];
 
-  constructor(private fb: FormBuilder, private dataSource: ShoppingCartDataSource) {}
+  constructor(
+    private log: NGXLogger,
+    private fb: FormBuilder,
+    private dataSource: ShoppingCartDataSource
+  ) { }
 
   ngOnInit() {
   }
@@ -67,21 +75,21 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   }
 
   goBack(): void {
-    console.log('goBack()');
+    this.log.info('goBack()');
 
     this.stepper.previous();
   }
 
   goForward(): void {
-    console.log('goForward()');
+    this.log.info('goForward()');
 
     /** this will submit the form and eventually call #submit() */
-    console.log('goForward(): calling submit()');
+    this.log.info('goForward(): calling submit()');
     this.submit();
   }
 
   private submit(): void {
-    console.log('submit()');
+    this.log.info('submit()');
 
     this.loading = true;
 

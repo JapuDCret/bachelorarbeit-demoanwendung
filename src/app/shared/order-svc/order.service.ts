@@ -4,6 +4,8 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+import { NGXLogger } from 'ngx-logger';
+
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 
 export interface Order {
@@ -72,17 +74,18 @@ export class OrderService {
   readonly orderServiceUrl: string;
 
   constructor(
+    private log: NGXLogger,
     private http: HttpClient,
     @Inject(APP_CONFIG) private config: AppConfig
   ) {
-    console.log('constructor(): config.apiEndpoint = ', config.apiEndpoint);
+    this.log.info('constructor(): config.apiEndpoint = ', config.apiEndpoint);
 
     this.orderServiceUrl = config.apiEndpoint + OrderService.ORDER_ENDPOINT;
-    console.log('constructor(): this.orderServiceUrl = ', this.orderServiceUrl);
+    this.log.info('constructor(): this.orderServiceUrl = ', this.orderServiceUrl);
   }
 
   public order(order: Order): Observable<Receipt> {
-    console.log('order(): placing order, data = ', order);
+    this.log.info('order(): placing order, data = ', order);
 
     return this.http.post<Receipt>(
       this.orderServiceUrl,
@@ -90,7 +93,7 @@ export class OrderService {
     )
       .pipe(
         tap((val) => {
-          console.log('order(): returnVal = ', val);
+          this.log.info('order(): returnVal = ', val);
         })
       );
   }

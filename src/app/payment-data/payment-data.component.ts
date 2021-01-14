@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
+
 import { MatStepper } from '@angular/material/stepper';
+
+import { NGXLogger } from 'ngx-logger';
 
 export interface CheckoutPaymentData {
   paymentOption: 'Rechnung' | 'Überweisung' | 'PayPal' | 'Kreditkarte';
@@ -22,9 +25,9 @@ export interface CheckoutPaymentData {
 };
 
 const IBANRegex = (/[A-Z]{2}\d{2} ?\d{4} ?\d{4} ?\d{4} ?\d{4} ?[\d]{0,2}/).compile();
-const IBANValidator: ValidatorFn = (control: AbstractControl): {[key: string]: any} | null => {
+const IBANValidator: ValidatorFn = (control: AbstractControl): { [key: string]: any } | null => {
   const valid = IBANRegex.test(control.value);
-  return valid ? null : { ibanInvalid: {value: control.value}};
+  return valid ? null : { ibanInvalid: { value: control.value } };
 }
 
 @Component({
@@ -71,48 +74,51 @@ export class PaymentDataComponent {
   @Input('stepper') stepper: MatStepper;
   @Output() submitted = new EventEmitter<CheckoutPaymentData>();
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private log: NGXLogger,
+    private fb: FormBuilder
+  ) {
     const paymentOptionsControl = this.paymentDataFormGroup.get('paymentOptions');
     paymentOptionsControl.valueChanges.subscribe(
       (newValue) => {
-        console.log('paymentOptionsControl.valueChanges(): paymentOptionsControl.value = ', paymentOptionsControl.value);
-        console.log('paymentOptionsControl.valueChanges(): newValue = ', newValue);
+        this.log.info('paymentOptionsControl.valueChanges(): paymentOptionsControl.value = ', paymentOptionsControl.value);
+        this.log.info('paymentOptionsControl.valueChanges(): newValue = ', newValue);
       }
     );
   }
 
   goBack(): void {
-    console.log('goBack()');
+    this.log.info('goBack()');
 
     this.stepper.previous();
   }
 
   goForward(): void {
-    console.log('goForward()');
+    this.log.info('goForward()');
 
     const paymentOption = this.paymentDataFormGroup.get('paymentOptions').value;
 
     /* intentionally missing paypal validation and erroneous default */
     var hasValidSubform = true;
-    if(paymentOption === 'per_rechnung') {
+    if (paymentOption === 'per_rechnung') {
       // no validation required
       hasValidSubform = true;
-    } else if(paymentOption === 'per_lastschrift') {
+    } else if (paymentOption === 'per_lastschrift') {
       hasValidSubform = this.lastschriftFormGroup.valid;
-    } else if(paymentOption === 'per_kreditkarte') {
+    } else if (paymentOption === 'per_kreditkarte') {
       // no validation required
       hasValidSubform = this.kreditkartenFormGroup.valid;
     }
 
-    if(this.paymentDataFormGroup.valid) {
-      console.log('goForward(): calling submit()');
+    if (this.paymentDataFormGroup.valid) {
+      this.log.info('goForward(): calling submit()');
       this.submit();
     }
   }
 
   private submit(): void {
-    console.log('submit()');
-    
+    this.log.info('submit()');
+
     const checkoutPaymentData: CheckoutPaymentData = {
       paymentOption: this.paymentDataFormGroup.get('paymentOptions').value,
       rechnungData: {},
@@ -132,12 +138,12 @@ export class PaymentDataComponent {
       },
     };
 
-    // console.log('submit(): checkoutPaymentData = ', checkoutPaymentData);
+    // this.log.info('submit(): checkoutPaymentData = ', checkoutPaymentData);
 
     this.loading = true;
 
     this.submitted.emit(checkoutPaymentData);
-    
+
     window.setTimeout(() => {
       this.loading = false;
 

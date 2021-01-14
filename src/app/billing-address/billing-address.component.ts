@@ -1,7 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+
 import { MatStepper } from '@angular/material/stepper';
-import { AddressValidationService } from '../shared/address-validation-svc/address-validation.service';
+
+import { NGXLogger } from 'ngx-logger';
+
+import { AddressValidationService } from 'src/app/shared/address-validation-svc/address-validation.service';
 
 export interface CheckoutBillingAddress {
   salutation: string;
@@ -42,30 +46,34 @@ export class BillingAddressComponent {
 
   addressValidationResult: string = null;
 
-  constructor(private fb: FormBuilder, private addressValidationService: AddressValidationService) { }
+  constructor(
+    private log: NGXLogger,
+    private fb: FormBuilder,
+    private addressValidationService: AddressValidationService
+  ) { }
 
   goBack(): void {
-    console.log('goBack()');
+    this.log.info('goBack()');
 
     this.stepper.previous();
   }
 
   goForward(): void {
-    console.log('goForward()');
+    this.log.info('goForward()');
 
-    console.log('goForward(): this.billingAddressFormGroup.valid = ', this.billingAddressFormGroup.valid);
+    this.log.info('goForward(): this.billingAddressFormGroup.valid = ', this.billingAddressFormGroup.valid);
 
     if (this.billingAddressFormGroup.valid) {
-      console.log('goForward(): calling submit()');
+      this.log.info('goForward(): calling submit()');
       this.submit();
     }
   }
 
   private submit(): void {
-    console.log('submit()');
+    this.log.info('submit()');
 
     this.addressValidationResult = null;
-    
+
     const checkoutBillingAddress: CheckoutBillingAddress = {
       salutation: this.billingAddressFormGroup.get('salutation').value,
       firstName: this.billingAddressFormGroup.get('firstName').value,
@@ -77,42 +85,42 @@ export class BillingAddressComponent {
       email: this.billingAddressFormGroup.get('email').value
     };
 
-    // console.log('submit(): checkoutBillingAddress = ', checkoutBillingAddress);
+    // this.log.info('submit(): checkoutBillingAddress = ', checkoutBillingAddress);
 
     this.loading = true;
 
     this.addressValidationService.validateAddress({ ...checkoutBillingAddress })
       .subscribe(
         res => {
-          console.log('validateAddress.subscribe(): res = ', res);
+          this.log.info('validateAddress.subscribe(): res = ', res);
 
           this.loading = false;
 
           this.submitted.emit(checkoutBillingAddress);
-      
+
           this.stepper.next();
         },
         err => {
-          console.log('validateAddress.subscribe(): err = ', err);
+          this.log.info('validateAddress.subscribe(): err = ', err);
 
           this.loading = false;
 
-          if(err.error && err.error.invalidField === 'streetName') {
+          if (err.error && err.error.invalidField === 'streetName') {
             this.addressValidationResult = 'Der angegebene Straßenname ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
             this.billingAddressFormGroup.get('streetName').setErrors({
               valid: 'Ungültige Eingabe'
             });
-          } else if(err.error && err.error.invalidField === 'streetNumber') {
+          } else if (err.error && err.error.invalidField === 'streetNumber') {
             this.addressValidationResult = 'Die angegebene Hausnummer ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
             this.billingAddressFormGroup.get('streetNumber').setErrors({
               valid: 'Ungültige Eingabe'
             });
-          } else if(err.error && err.error.invalidField === 'postalCode') {
+          } else if (err.error && err.error.invalidField === 'postalCode') {
             this.addressValidationResult = 'Die angegebene Postleitzahl ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
             this.billingAddressFormGroup.get('postalCode').setErrors({
               valid: 'Ungültige Eingabe'
             });
-          } else if(err.error && err.error.invalidField === 'city') {
+          } else if (err.error && err.error.invalidField === 'city') {
             this.addressValidationResult = 'Die angegebene Stadt ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
             this.billingAddressFormGroup.get('city').setErrors({
               valid: 'Ungültige Eingabe'

@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
+import { NGXLogger } from 'ngx-logger';
+
 import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
 import { LocalizationService } from 'src/app/shared/localization-svc/localization.service';
 
@@ -40,6 +42,7 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
   readonly shoppingCartId: string;
 
   constructor(
+    private log: NGXLogger,
     private cartService: ShoppingCartService,
     private localizationService: LocalizationService
   ) {
@@ -49,11 +52,11 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
   }
 
   private generateSeed(): string {
-    var result           = '';
-    var characters       = 'abcdef0123456789';
+    var result = '';
+    var characters = 'abcdef0123456789';
     var charactersLength = characters.length;
-    for ( var i = 0; i < 8; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    for (var i = 0; i < 8; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
   }
@@ -67,23 +70,47 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
     return this.getAndMapShoppingCart(this.shoppingCartId);
   }
 
-  private getAndMapShoppingCart(shoppingCartId: string): Observable<ShoppingCartItem[]> {
-    const translations$ = this.localizationService.getTranslations();
-    const shoppingCart$ = this.cartService.getShoppingCart(shoppingCartId);
-    
-    return combineLatest(translations$, shoppingCart$)
-    .pipe(
-      map(([translations, shoppingCart]) => {
-        const mappedCartItems = shoppingCart && shoppingCart.items && shoppingCart.items.map((val) => {
-          return { ...val, imagePath: IMAGE_MAPPING[val.id], name: translations["de"][val.translationKey] }
-        });
+  private mappedShoppingCart$: Observable<ShoppingCartItem[]>;
 
-        return mappedCartItems;
-      }),
-      tap((val) => {
-        console.log('getAndMapShoppingCart(): val = ', val);
-      })
-    );
+  private getAndMapShoppingCart(shoppingCartId: string): Observable<ShoppingCartItem[]> {
+    if (this.mappedShoppingCart$) {
+      return this.mappedShoppingCart$;
+    }
+
+    this.log.debug('getAndMapShoppingCart(): requesting translations');
+    const translations$ = this.localizationService.getTranslations();
+    this.log.debug('getAndMapShoppingCart(): requesting shoppingCart');
+    const shoppingCart$ = this.cartService.getShoppingCart(shoppingCartId);
+
+    this.mappedShoppingCart$ = combineLatest([translations$, shoppingCart$])
+      .pipe(
+        tap(
+          ([translations]) => {
+            if (translations == null) {
+              this.log.warn('getAndMapShoppingCart(): translations are null!');
+            }
+          },
+          (err) => {
+            this.log.warn('getAndMapShoppingCart(): err = ', err);
+          }
+        ),
+        map(([translations, shoppingCart]) => {
+          const mappedCartItems = shoppingCart && shoppingCart.items && shoppingCart.items.map((val) => {
+            const imagePath = IMAGE_MAPPING[val.id];
+
+            const name = translations ? translations["de"][val.translationKey] : `***${val.translationKey}***`;
+
+            return { ...val, imagePath, name }
+          });
+
+          return mappedCartItems;
+        }),
+        tap((mappedVal) => {
+          this.log.info('getAndMapShoppingCart(): mappedVal = ', mappedVal);
+        }),
+      );
+
+    return this.mappedShoppingCart$;
   }
 
   /**

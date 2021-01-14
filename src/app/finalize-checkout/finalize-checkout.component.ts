@@ -8,11 +8,13 @@ import { delay, mergeMap, reduce } from 'rxjs/operators';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 
+import { NGXLogger } from 'ngx-logger';
+
+import { OrderService, Receipt } from 'src/app/shared/order-svc/order.service';
 import { CheckoutData } from 'src/app/checkout/checkout.component';
+import { ErrorDialogComponent } from 'src/app/error-dialog/error-dialog.component';
 import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
 import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
-import { OrderService, Receipt } from 'src/app/shared/order-svc/order.service';
-import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 
 @Component({
   selector: 'app-finalize-checkout',
@@ -25,7 +27,7 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   shoppingCartId$: string;
 
   loading: boolean = false;
-  
+
   finalizeCheckoutFormGroup = this.fb.group({
   });
 
@@ -37,11 +39,12 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   displayedColumns = ['imagePath', 'amount', 'name', 'price'];
 
   constructor(
+    private log: NGXLogger,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private cartDataSource: ShoppingCartDataSource,
     private orderService: OrderService,
-  ) {}
+  ) { }
 
   ngOnInit() {
   }
@@ -61,22 +64,22 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
   }
 
   goBack(): void {
-    console.log('goBack()');
+    this.log.info('goBack()');
 
     this.stepper.previous();
   }
 
   goForward(): void {
-    console.log('goForward()');
+    this.log.info('goForward()');
 
-    if(this.finalizeCheckoutFormGroup.valid) {
-      console.log('goForward(): calling submit()');
+    if (this.finalizeCheckoutFormGroup.valid) {
+      this.log.info('goForward(): calling submit()');
       this.submit();
     }
   }
 
   private submit(): void {
-    console.log('submit()');
+    this.log.info('submit()');
 
     this.loading = true;
 
@@ -97,28 +100,28 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
         }
       },
     })
-    .subscribe(
-      (receipt) => {
-        console.log('submit(): receipt = ', receipt);
+      .subscribe(
+        (receipt) => {
+          this.log.info('submit(): receipt = ', receipt);
 
-        this.loading = false;
+          this.loading = false;
 
-        this.receipt.emit(receipt);
-      },
-      err => {
-        console.log('submit(): err = ', err);
+          this.receipt.emit(receipt);
+        },
+        err => {
+          this.log.warn('submit(): err = ', err);
 
-        this.loading = false;
+          this.loading = false;
 
-        this.dialog.open(ErrorDialogComponent, {
-          data: {
-            action: 'Bestellung ausführen',
-            error: err.error,
-            message: err.message,
-          },
-        });
-      }
-    );
+          this.dialog.open(ErrorDialogComponent, {
+            data: {
+              action: 'Bestellung ausführen',
+              error: err.error,
+              message: err.message,
+            },
+          });
+        }
+      );
   }
 }
 

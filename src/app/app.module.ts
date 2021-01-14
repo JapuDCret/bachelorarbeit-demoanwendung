@@ -33,6 +33,7 @@ import { ProgressContainerComponent } from 'src/app/progress-container/progress-
 import { ReceiptDialogComponent } from 'src/app/receipt-dialog/receipt-dialog.component';
 import { ShippingDataComponent } from 'src/app/shipping-data/shipping-data.component';
 import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.component';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,11 @@ import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.compo
     ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.DEBUG,
+      // serverLoggingUrl: '/api/logs',
+      // serverLogLevel: NgxLoggerLevel.INFO,
+    }),
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,

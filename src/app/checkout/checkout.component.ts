@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { MatDialog } from '@angular/material/dialog';
+
+import { NGXLogger } from 'ngx-logger';
 
 import { Receipt } from 'src/app/shared/order-svc/order.service';
 import { CheckoutShoppingCart } from 'src/app/shopping-cart/shopping-cart.component';
@@ -38,7 +41,11 @@ export class CheckoutComponent implements OnInit {
 
   receiptData: Receipt = null;
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog) { }
+  constructor(
+    private log: NGXLogger,
+    private fb: FormBuilder,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.cartFormGroup = this.fb.group({});
@@ -49,34 +56,34 @@ export class CheckoutComponent implements OnInit {
   }
 
   onShoppingCartSubmit(data: CheckoutShoppingCart): void {
-    console.log('onShoppingCartSubmit(): data = ', data);
+    this.log.info('onShoppingCartSubmit(): data = ', data);
 
     this.checkoutData.shoppingCart = data;
   }
 
   onBillingAddressSubmit(data: CheckoutBillingAddress): void {
-    console.log('onBillingAddressSubmit(): data = ', data);
+    this.log.info('onBillingAddressSubmit(): data = ', data);
 
     this.checkoutData.billingAddress = data;
   }
 
   onShippingDataSubmit(data: CheckoutShippingData): void {
-    console.log('onShippingDataSubmit(): data = ', data);
-    
+    this.log.info('onShippingDataSubmit(): data = ', data);
+
     this.checkoutData.shippingData = data;
   }
 
   onPaymentDataSubmit(data: CheckoutPaymentData): void {
-    console.log('onPaymentDataSubmit(): data = ', data);
-    
+    this.log.info('onPaymentDataSubmit(): data = ', data);
+
     this.checkoutData.paymentData = data;
   }
 
   onOrderReceipt(data: Receipt): void {
-    console.log('onOrderReceipt(): data = ', data);
+    this.log.info('onOrderReceipt(): data = ', data);
 
     this.receiptData = data;
-    
+
     this.dialog.open(ReceiptDialogComponent, {
       data: this.receiptData,
       disableClose: true,

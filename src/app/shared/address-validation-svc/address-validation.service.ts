@@ -4,6 +4,8 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+import { NGXLogger } from 'ngx-logger';
+
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 
 export interface Address {
@@ -23,17 +25,18 @@ export class AddressValidationService {
   readonly addressValidationServiceUrl: string;
 
   constructor(
+    private log: NGXLogger,
     private http: HttpClient,
     @Inject(APP_CONFIG) private config: AppConfig
   ) {
-    console.log('constructor(): config.apiEndpoint = ', config.apiEndpoint);
+    this.log.info('constructor(): config.apiEndpoint = ', config.apiEndpoint);
 
     this.addressValidationServiceUrl = config.apiEndpoint + AddressValidationService.ADDRESSVALIDATION_ENDPOINT;
-    console.log('constructor(): this.addressValidationServiceUrl = ', this.addressValidationServiceUrl);
+    this.log.info('constructor(): this.addressValidationServiceUrl = ', this.addressValidationServiceUrl);
   }
 
   public validateAddress(address: Address): Observable<void> {
-    console.log('validateAddress(): validating address, data = ', address);
+    this.log.info('validateAddress(): validating address, data = ', address);
 
     return this.http.post<void>(
       this.addressValidationServiceUrl,
@@ -41,7 +44,7 @@ export class AddressValidationService {
     )
       .pipe(
         tap((val) => {
-          console.log('validateAddress(): returnVal = ', val);
+          this.log.info('validateAddress(): returnVal = ', val);
         })
       );
   }
