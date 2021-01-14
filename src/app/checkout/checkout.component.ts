@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 import { NGXLogger } from 'ngx-logger';
 
@@ -11,7 +11,6 @@ import { CheckoutShoppingCart } from 'src/app/shopping-cart/shopping-cart.compon
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
 import { CheckoutShippingData } from 'src/app/shipping-data/shipping-data.component';
 import { CheckoutPaymentData } from 'src/app/payment-data/payment-data.component';
-import { ReceiptDialogComponent } from 'src/app/receipt-dialog/receipt-dialog.component';
 
 export interface CheckoutData {
   shoppingCart: null | CheckoutShoppingCart;
@@ -43,8 +42,8 @@ export class CheckoutComponent implements OnInit {
 
   constructor(
     private log: NGXLogger,
-    private fb: FormBuilder,
-    private dialog: MatDialog
+    private router: Router,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
@@ -84,9 +83,8 @@ export class CheckoutComponent implements OnInit {
 
     this.receiptData = data;
 
-    this.dialog.open(ReceiptDialogComponent, {
-      data: this.receiptData,
-      disableClose: true,
-    });
+    this.log.info('goToTheShop(): navigating to receipt page');
+
+    this.router.navigate(['receipt']);
   }
 }

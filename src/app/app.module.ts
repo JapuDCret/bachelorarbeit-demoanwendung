@@ -29,8 +29,7 @@ import { CheckoutComponent } from 'src/app/checkout/checkout.component';
 import { ErrorDialogComponent } from 'src/app/error-dialog/error-dialog.component';
 import { FinalizeCheckoutComponent } from 'src/app/finalize-checkout/finalize-checkout.component';
 import { PaymentDataComponent } from 'src/app/payment-data/payment-data.component';
-import { ProgressContainerComponent } from 'src/app/progress-container/progress-container.component';
-import { ReceiptDialogComponent } from 'src/app/receipt-dialog/receipt-dialog.component';
+import { ReceiptPageComponent } from 'src/app/receipt-page/receipt-page.component';
 import { ShippingDataComponent } from 'src/app/shipping-data/shipping-data.component';
 import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.component';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
@@ -43,8 +42,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
     ErrorDialogComponent,
     FinalizeCheckoutComponent,
     PaymentDataComponent,
-    ProgressContainerComponent,
-    ReceiptDialogComponent,
+    ReceiptPageComponent,
     ShippingDataComponent,
     ShoppingCartComponent,
   ],

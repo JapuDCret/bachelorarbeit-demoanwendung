@@ -84,17 +84,25 @@ export class OrderService {
     this.log.info('constructor(): this.orderServiceUrl = ', this.orderServiceUrl);
   }
 
+  private lastResponse: Observable<Receipt>;
+
   public order(order: Order): Observable<Receipt> {
     this.log.info('order(): placing order, data = ', order);
 
-    return this.http.post<Receipt>(
+    this.lastResponse = this.http.post<Receipt>(
       this.orderServiceUrl,
       order
     )
-      .pipe(
-        tap((val) => {
-          this.log.info('order(): returnVal = ', val);
-        })
-      );
+    .pipe(
+      tap((val) => {
+        this.log.info('order(): returnVal = ', val);
+      })
+    );
+
+    return this.lastResponse;
+  }
+
+  public getLastResponse(): Observable<Receipt> {
+    return this.lastResponse;
   }
 }

@@ -1,0 +1,33 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Bestellbestätigung</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div *ngIf="receipt$ | async as receipt; else noReceipt">
+            <strong>Vielen Dank für Ihre Bestellung!</strong>
+            <p>Ihre Bestellung von <span>{{ receipt.itemCount }}</span> Artikeln wurde aufgenommen und wird unter der Nummer <ins>#{{ receipt.orderId }}</ins> bearbeitet.</p>
+            <p>In Kürze werden wir <span>{{ receipt.total | number:'1.2'}} €</span> über Ihre gewählte Rechnungsart <span>"{{ receipt.paymentType }}"</span> einholen.</p>
+            <div>
+                <p>Die Artikel werden in vorraussichtlich in 3-5 Werktagen Ihnen zugestellt, unter Berücksichtigung folgender Adresse:</p>
+                <br />
+                <mat-card>
+                    <mat-card-content>
+                        <p>{{receipt.shippingData.salutation}} {{receipt.shippingData.firstName}} {{receipt.shippingData.lastName}}</p>
+                        <p>{{receipt.shippingData.streetName}} {{receipt.shippingData.streetNumber}}</p>
+                        <p>{{receipt.shippingData.postalCode}} {{receipt.shippingData.city}}</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+
+        <ng-template #noReceipt>
+            <p>Es ist keine Bestellbestätigung vorhanden.</p>
+        </ng-template>
+    </mat-card-content>
+
+    <mat-card-actions class="cardActions">
+        <p></p>
+        <button mat-raised-button (click)="goToTheShop()" color="primary">Zum Shop</button>
+    </mat-card-actions>
+</mat-card>
