@@ -6,7 +6,7 @@ Die Demoanwendung soll beispielhaft eine fehlerbehaftete Webanwendung darstellen
 
 ### "Keine Übersetzungen"
 
-- Problem: Nutzer berichten, dass manchmal die Webanwendung beim Start nicht funktioniert (es werden keine Daten im Warenkorb angezeigt).
+- Problem: Nutzer berichten, dass manchmal die Webanwendung beim Start keine Artikeltexte anzeigt.
 
 - Ursache: Einer der "localization-svc" Pods hat eine defekte Konfiguration.
 
@@ -14,11 +14,11 @@ Die Demoanwendung soll beispielhaft eine fehlerbehaftete Webanwendung darstellen
 
 - Problem: Nutzer berichten, dass Ihr Straßenname nicht eingeben werden kann. Beispielsweise die Eingabe "Ährenweg" führt zu einem Fehler.
 
-- Ursache: Der "address-validation-svc" validiert Straßen mit dem Regex `[a-zA-Z\,\-\ ]+`, welches keine gängigen Sonderzeichn (ä ,ö ,ü, ß) erlaubt.
+- Ursache: Der "address-validation-svc" validiert Straßen mit dem RegEx `[a-zA-Z\,\-\ ]+`, welches keine gängigen Sonderzeichen (ä ,ö ,ü, ß) erlaubt.
 
 ### "Gültige Hausnummern sind ungültig"
 
-- Problem: Nutzer berichten, dass Hausnummern die nicht nur aus Zahlen bestehen zum Fehler führen.
+- Problem: Nutzer berichten, dass Hausnummern, die nicht nur aus Zahlen bestehen, zum Fehler führen.
 
 - Ursache: Der "address-validation-svc" validiert Hausnummern als Zahl und schlägt im o.g. Fall in der Konvertierung fehl.
 
@@ -44,7 +44,7 @@ Die Demoanwendung soll beispielhaft eine fehlerbehaftete Webanwendung darstellen
 
 - Problem: Nutzer berichten, dass in der Bestellbestätigung die falsche Zahlungsart angezeigt wird. In der Bestellübersicht wurde jedoch die korrekte Zahlungsart angezeigt.
 
-- Ursache: Das Frontend sendet alle Formulardaten an "order-svc", dieser aber an, dass alle nicht ausgewählten Formulare `null` sind.
+- Ursache: Das Frontend sendet alle Formulardaten an "order-svc", dieser nimmt aber an, dass alle nicht ausgewählten Formulare `null` sind.
 
 ### "Lange Verarbeitung"
 
