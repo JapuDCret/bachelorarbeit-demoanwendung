@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 
 import { FormBuilder } from '@angular/forms';
 
@@ -29,7 +29,7 @@ export interface CheckoutShoppingCart {
   templateUrl: './shopping-cart.component.html',
   styleUrls: ['./shopping-cart.component.css']
 })
-export class ShoppingCartComponent implements AfterViewInit, OnInit {
+export class ShoppingCartComponent implements AfterViewInit {
   @ViewChild(MatTable) table: MatTable<ShoppingCartItem>;
   totalSum$: Observable<number>;
   itemCount: number;
@@ -49,9 +49,6 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
     private fb: FormBuilder,
     private dataSource: ShoppingCartDataSource
   ) { }
-
-  ngOnInit() {
-  }
 
   ngAfterViewInit() {
     this.table.dataSource = this.dataSource;

@@ -117,5 +117,7 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
    *  Called when the table is being destroyed. Use this function, to clean up
    * any open connections or free any held resources that were set up during connect.
    */
-  disconnect() { }
+  disconnect() {
+    this.mappedShoppingCart$ = null;
+  }
 }
