@@ -5,10 +5,12 @@ import { environment } from "src/environments/environment";
 export let APP_CONFIG = new InjectionToken<AppConfig>('app.config');
 
 export class AppConfig {
+  environment: string;
   apiEndpoint: string;
 }
 
 export const APP_DI_CONFIG: AppConfig = {
+  environment: environment.environment,
   apiEndpoint: environment.apiEndpoint,
 }
 

@@ -1,4 +1,4 @@
 export const environment = {
-    production: true,
+    environment: "production",
     apiEndpoint: 'http://backend4frontend:9080',
 };
