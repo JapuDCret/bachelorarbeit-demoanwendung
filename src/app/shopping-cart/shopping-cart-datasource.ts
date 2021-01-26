@@ -49,8 +49,6 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
     private errorHandler: SplunkForwardingErrorHandler
   ) {
     super();
-
-    this.shoppingCartId = window.customer.sessionId;
   }
 
   /**
@@ -59,7 +57,7 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
    * @returns A stream of the items to be rendered.
    */
   connect(): Observable<ShoppingCartItem[]> {
-    return this.getAndMapShoppingCart(this.shoppingCartId);
+    return this.getAndMapShoppingCart(window.customer.sessionId);
   }
 
   private mappedShoppingCart$: Observable<ShoppingCartItem[]>;

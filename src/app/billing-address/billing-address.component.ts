@@ -132,6 +132,7 @@ export class BillingAddressComponent {
             this.addressValidationResult = 'Die angegebene Adresse ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
           }
 
+          err.error = null;
           this.errorHandler.handleError(err, { component: 'BillingAddressComponent', addressValidationResult: this.addressValidationResult });
 
           this.billingAddressFormGroup.updateValueAndValidity();

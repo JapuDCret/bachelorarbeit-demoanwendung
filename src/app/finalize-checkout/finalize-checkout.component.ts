@@ -86,7 +86,7 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
     this.loading = true;
 
     this.orderService.order({
-      shoppingCartId: this.cartDataSource.shoppingCartId,
+      shoppingCartId: this.checkoutData.shoppingCartInfo.shoppingCartId,
       billingAddress: this.checkoutData.billingAddress,
       shippingData: this.checkoutData.shippingData,
       paymentData: {

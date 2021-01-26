@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 import { FormBuilder, FormGroup } from '@angular/forms';
 
@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 
 import { Receipt } from 'src/app/shared/order-svc/order.service';
+import { generateFakeUUID } from 'src/app/shared/session-util/session-util';
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
 import { CheckoutShoppingCartInfo } from 'src/app/shopping-cart/shopping-cart.component';
 import { CheckoutShippingData } from 'src/app/shipping-data/shipping-data.component';
@@ -52,6 +53,12 @@ export class CheckoutComponent implements OnInit {
     this.shippingDataFormGroup = this.fb.group({});
     this.paymentDataFormGroup = this.fb.group({});
     this.finalizeCheckoutFormGroup = this.fb.group({});
+
+    this.log.info('ngOnInit(): retrieving sessionId..');
+
+    window.customer.sessionId = generateFakeUUID();
+
+    this.log.info('ngOnInit(): sessionId = ', window.customer.sessionId);
   }
 
   onShoppingCartSubmit(data: CheckoutShoppingCartInfo): void {
