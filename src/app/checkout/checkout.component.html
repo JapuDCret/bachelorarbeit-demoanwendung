@@ -5,7 +5,7 @@
                 <mat-step [stepControl]="step1.cartFormGroup">
                     <ng-template matStepLabel>Warenkorb</ng-template>
                     
-                    <app-shopping-cart #step1 [stepper]="stepper"></app-shopping-cart>
+                    <app-shopping-cart #step1 [stepper]="stepper" (submitted)="onShoppingCartSubmit($event)"></app-shopping-cart>
                 </mat-step>
                 <mat-step [stepControl]="step2.billingAddressFormGroup">
                     <ng-template matStepLabel>Rechnungsadresse</ng-template>

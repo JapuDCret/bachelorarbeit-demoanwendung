@@ -144,7 +144,7 @@ export class ShippingDataComponent implements OnChanges {
   private submit(): void {
     this.log.info('submit()');
 
-    const checkoutShoppingData: CheckoutShippingData = {
+    const checkoutShippingData: CheckoutShippingData = {
       salutation: this.shippingDataFormGroup.get('salutation').value,
       firstName: this.shippingDataFormGroup.get('firstName').value,
       lastName: this.shippingDataFormGroup.get('lastName').value,
@@ -154,11 +154,12 @@ export class ShippingDataComponent implements OnChanges {
       postalCode: this.shippingDataFormGroup.get('postalCode').value
     };
 
-    // this.log.info('submit(): checkoutShoppingData = ', checkoutShoppingData);
+    // this.log.info('submit(): checkoutShippingData = ', checkoutShippingData);
 
     this.loading = true;
 
-    this.submitted.emit(checkoutShoppingData);
+    window.frontendModel.shippingData = checkoutShippingData;
+    this.submitted.emit(checkoutShippingData);
 
     window.setTimeout(() => {
       this.loading = false;

@@ -6,6 +6,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { NGXLogger } from 'ngx-logger';
 
 import { AddressValidationService } from 'src/app/shared/address-validation-svc/address-validation.service';
+import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
 
 export interface CheckoutBillingAddress {
   salutation: string;
@@ -49,7 +50,8 @@ export class BillingAddressComponent {
   constructor(
     private log: NGXLogger,
     private fb: FormBuilder,
-    private addressValidationService: AddressValidationService
+    private addressValidationService: AddressValidationService,
+    private errorHandler: SplunkForwardingErrorHandler
   ) { }
 
   goBack(): void {
@@ -59,12 +61,11 @@ export class BillingAddressComponent {
   }
 
   goForward(): void {
-    this.log.info('goForward()');
-
     this.log.info('goForward(): this.billingAddressFormGroup.valid = ', this.billingAddressFormGroup.valid);
 
     if (this.billingAddressFormGroup.valid) {
       this.log.info('goForward(): calling submit()');
+      
       this.submit();
     }
   }
@@ -88,6 +89,8 @@ export class BillingAddressComponent {
     // this.log.info('submit(): checkoutBillingAddress = ', checkoutBillingAddress);
 
     this.loading = true;
+    
+    window.frontendModel.billingAddress = checkoutBillingAddress;
 
     this.addressValidationService.validateAddress({ ...checkoutBillingAddress })
       .subscribe(
@@ -128,6 +131,8 @@ export class BillingAddressComponent {
           } else {
             this.addressValidationResult = 'Die angegebene Adresse ist ungültig, bitte korrigieren Sie Ihre Eingaben.';
           }
+
+          this.errorHandler.handleError(err, { component: 'BillingAddressComponent', addressValidationResult: this.addressValidationResult });
 
           this.billingAddressFormGroup.updateValueAndValidity();
         }

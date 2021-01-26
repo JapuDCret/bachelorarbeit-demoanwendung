@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 
 import { NGXLogger } from 'ngx-logger';
-import { AppConfig, APP_CONFIG } from '../app-config-module';
+
+import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 
 interface SplunkEvent {
   [key: string]: any;
@@ -48,12 +49,19 @@ export class SplunkForwardingService {
     this.log.info('constructor(): this.logServiceUrl = ', this.logServiceUrl);
   }
 
+  /**
+   * The entry will be supplemented with the source, the environment, the current path, the sessionId and the logRocketSessionURL
+   * 
+   * @param entry 
+   */
   public forwardEvent(entry: SplunkEntry): void {
     entry.source = 'frontend';
     entry.event.environment = this.config.environment;
     entry.event.path = window.location.href;
 
-    // entry.event.lrSession = window.logrocketData.sessionURL;
+    entry.event.sessionId = window.customer.sessionId;
+
+    entry.event.logRocketSessionURL = window.logrocketData.sessionURL;
     
     // do not use the logger here, or a it'll trigger a recursion
     console.log('SplunkForwardingService.forwardEvent(): entry = ', entry);

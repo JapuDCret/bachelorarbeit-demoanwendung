@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 
 import { NGXLogger, NGXLoggerMonitor, NGXLogInterface } from "ngx-logger";
 
-import { SplunkForwardingService } from "src/app/splunk-forwarding-svc/splunk-forwarding.service";
+import { SplunkForwardingService } from "src/app/shared/splunk-forwarding-svc/splunk-forwarding.service";
 
 @Injectable({
     providedIn: 'root',
@@ -37,7 +37,7 @@ export class SplunkLoggingMonitor extends NGXLoggerMonitor {
         const printableParams = {};
 
         // do not use the logger here, or a it'll trigger a recursion
-        console.log('makeParamsPrintable(): optionalParams = ', optionalParams);
+        // console.log('makeParamsPrintable(): optionalParams = ', optionalParams);
 
         if(Array.isArray(optionalParams)) {
             for(let i = 0; i < optionalParams.length; i++) {

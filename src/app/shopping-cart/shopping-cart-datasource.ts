@@ -8,6 +8,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
 import { LocalizationService } from 'src/app/shared/localization-svc/localization.service';
+import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
 
 export interface ShoppingCart {
   shoppingCartId: string;
@@ -44,21 +45,12 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
   constructor(
     private log: NGXLogger,
     private cartService: ShoppingCartService,
-    private localizationService: LocalizationService
+    private localizationService: LocalizationService,
+    private errorHandler: SplunkForwardingErrorHandler
   ) {
     super();
 
-    this.shoppingCartId = this.generateSeed();
-  }
-
-  private generateSeed(): string {
-    var result = '';
-    var characters = 'abcdef0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < 8; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
+    this.shoppingCartId = window.customer.sessionId;
   }
 
   /**
@@ -92,6 +84,8 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
           },
           (err) => {
             this.log.warn('getAndMapShoppingCart(): err = ', err);
+            
+            this.errorHandler.handleError(err, { component: 'ShoppingCartDataSource' });
           }
         ),
         map(([translations, shoppingCart]) => {

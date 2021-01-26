@@ -7,13 +7,13 @@ import { Router } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 
 import { Receipt } from 'src/app/shared/order-svc/order.service';
-import { CheckoutShoppingCart } from 'src/app/shopping-cart/shopping-cart.component';
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
+import { CheckoutShoppingCartInfo } from 'src/app/shopping-cart/shopping-cart.component';
 import { CheckoutShippingData } from 'src/app/shipping-data/shipping-data.component';
 import { CheckoutPaymentData } from 'src/app/payment-data/payment-data.component';
 
 export interface CheckoutData {
-  shoppingCart: null | CheckoutShoppingCart;
+  shoppingCartInfo: null | CheckoutShoppingCartInfo,
   billingAddress: null | CheckoutBillingAddress;
   shippingData: null | CheckoutShippingData;
   paymentData: null | CheckoutPaymentData;
@@ -32,7 +32,7 @@ export class CheckoutComponent implements OnInit {
   finalizeCheckoutFormGroup: FormGroup;
 
   checkoutData: CheckoutData = {
-    shoppingCart: null,
+    shoppingCartInfo: null,
     billingAddress: null,
     shippingData: null,
     paymentData: null
@@ -54,10 +54,10 @@ export class CheckoutComponent implements OnInit {
     this.finalizeCheckoutFormGroup = this.fb.group({});
   }
 
-  onShoppingCartSubmit(data: CheckoutShoppingCart): void {
+  onShoppingCartSubmit(data: CheckoutShoppingCartInfo): void {
     this.log.info('onShoppingCartSubmit(): data = ', data);
 
-    this.checkoutData.shoppingCart = data;
+    this.checkoutData.shoppingCartInfo = data;
   }
 
   onBillingAddressSubmit(data: CheckoutBillingAddress): void {

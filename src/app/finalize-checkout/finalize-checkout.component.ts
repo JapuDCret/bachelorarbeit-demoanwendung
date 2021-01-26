@@ -15,6 +15,7 @@ import { CheckoutData } from 'src/app/checkout/checkout.component';
 import { ErrorDialogComponent } from 'src/app/error-dialog/error-dialog.component';
 import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
 import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
+import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
 
 @Component({
   selector: 'app-finalize-checkout',
@@ -44,6 +45,7 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private cartDataSource: ShoppingCartDataSource,
     private orderService: OrderService,
+    private errorHandler: SplunkForwardingErrorHandler
   ) { }
 
   ngOnInit() {
@@ -110,6 +112,8 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
         },
         err => {
           this.log.warn('submit(): err = ', err);
+
+          this.errorHandler.handleError(err, { component: 'FinalizeCheckoutComponent' });
 
           this.loading = false;
 

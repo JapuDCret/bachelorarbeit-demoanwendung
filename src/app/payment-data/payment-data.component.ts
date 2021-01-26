@@ -94,8 +94,6 @@ export class PaymentDataComponent {
   }
 
   goForward(): void {
-    this.log.info('goForward()');
-
     const paymentOption = this.paymentDataFormGroup.get('paymentOptions').value;
 
     /* intentionally missing paypal validation and erroneous default */
@@ -109,6 +107,8 @@ export class PaymentDataComponent {
       // no validation required
       hasValidSubform = this.kreditkartenFormGroup.valid;
     }
+
+    this.log.info('goForward(): hasValidSubform = ', hasValidSubform);
 
     if (this.paymentDataFormGroup.valid) {
       this.log.info('goForward(): calling submit()');
@@ -142,6 +142,7 @@ export class PaymentDataComponent {
 
     this.loading = true;
 
+    window.frontendModel.paymentData = checkoutPaymentData;
     this.submitted.emit(checkoutPaymentData);
 
     window.setTimeout(() => {
