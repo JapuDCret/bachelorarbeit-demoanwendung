@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 
 import { NGXLogger } from 'ngx-logger';
+import { interval } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 
@@ -35,18 +37,37 @@ export interface SplunkEntry {
 export class SplunkForwardingService {
 
   private static readonly LOG_ENDPOINT = '/data/log';
+  private static readonly LOG_BATCH_ENDPOINT = '/data/log-batch';
 
   private logServiceUrl: string;
+  private logBatchServiceUrl: string;
+
+  private batchProcessRunning: boolean
+  private batchQueue: SplunkEntry[];
 
   constructor(
     private log: NGXLogger,
     private http: HttpClient,
     @Inject(APP_CONFIG) private config: AppConfig
   ) {
-    this.log.info('constructor(): config.apiEndpoint = ', config.apiEndpoint);
+    this.logServiceUrl = config.apiEndpoint + SplunkForwardingService.LOG_ENDPOINT;
+    console.log('constructor(): this.logServiceUrl = ', this.logServiceUrl);
 
-    this.logServiceUrl = this.config.apiEndpoint + SplunkForwardingService.LOG_ENDPOINT;
-    this.log.info('constructor(): this.logServiceUrl = ', this.logServiceUrl);
+    this.logBatchServiceUrl = config.apiEndpoint + SplunkForwardingService.LOG_BATCH_ENDPOINT;
+    console.log('constructor(): this.logBatchServiceUrl = ', this.logBatchServiceUrl);
+
+    this.batchProcessRunning = true;
+    this.batchQueue = [];
+
+    interval(5000)
+      .pipe(takeWhile(() => this.batchProcessRunning))
+      .subscribe(() => {
+        const batch = this.batchQueue;
+
+        this.batchQueue = [];
+
+        this.sendBatch(batch);
+      });
   }
 
   /**
@@ -64,8 +85,16 @@ export class SplunkForwardingService {
     entry.event.logRocketSessionURL = window.logrocketData.sessionURL;
     
     // do not use the logger here, or a it'll trigger a recursion
-    console.log('SplunkForwardingService.forwardEvent(): entry = ', entry);
+    console.log('SplunkForwardingService.forwardEvent(): adding entry to queue, entry = ', entry);
 
-    this.http.post<void>(this.logServiceUrl, entry).subscribe();
+    this.batchQueue.push(entry);
+    // this.http.post<void>(this.logServiceUrl, entry).subscribe();
+  }
+
+  private sendBatch(batch: SplunkEntry[]): void {
+    if(batch.length > 0) {
+      console.log('SplunkForwardingService.sendBatch(): sending ' + batch.length + ' entries to batch endpoint');
+      this.http.post<void>(this.logBatchServiceUrl, batch).subscribe();
+    }
   }
 }
