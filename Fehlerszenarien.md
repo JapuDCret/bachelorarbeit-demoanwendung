@@ -32,19 +32,19 @@ Die Demoanwendung soll beispielhaft eine fehlerbehaftete Webanwendung darstellen
 
 - Problem: Nutzer können in den Lieferdaten ungültige Eingaben tätigen und absenden, bei der Bestellaufgabe kommt es zu einem Fehler.
 
-- Ursache: Das Frontend überprüft lediglich die Rechnungsadresse, aber nicht die Lieferadresse
+- Ursache: Das Frontend überprüft lediglich die Rechnungsadresse, aber nicht die Lieferadresse.
 
 ### "Vor- und Nachnamen werden abgeschnitten"
 
 - Problem: Nutzer berichten, dass in der Bestellbestätigung Ihre Vor- und Nachnamen abgeschnitten dargestellt werden.
 
-- Ursache: Der "order-svc" begrenzt den Vor- sowie den Nachnamen auf 20 Zeichen.
+- Ursache: Der "order-svc" begrenzt den Vor- sowie den Nachnamen auf 20 Zeichen, das Frontend begrenzt dies jedoch nicht.
 
 ### "Falsche Zahlungsart"
 
 - Problem: Nutzer berichten, dass in der Bestellbestätigung die falsche Zahlungsart angezeigt wird. In der Bestellübersicht wurde jedoch die korrekte Zahlungsart angezeigt.
 
-- Ursache: Das Frontend sendet alle Formulardaten an "order-svc", dieser nimmt aber an, dass alle nicht ausgewählten Formulare `null` sind.
+- Ursache: Das Frontend sendet alle Formulardaten jeder Rechnungsart an "order-svc". Dieser nimmt aber an, dass alle nicht ausgewählten Rechnungsarten statt Formulardaten nur `null` enthalten.
 
 ### "Lange Verarbeitung"
 
