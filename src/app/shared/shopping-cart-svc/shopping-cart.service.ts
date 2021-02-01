@@ -6,7 +6,12 @@ import { publishReplay, refCount, tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
+import * as api from '@opentelemetry/api';
+import { WebTracerProvider } from '@opentelemetry/web';
+import { Span } from '@opentelemetry/tracing'
+
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
+import { TraceUtilService } from 'src/app/shared/trace-util/trace-util.service';
 
 export interface BE_ShoppingCart {
   shoppingCartId: string;
@@ -32,24 +37,53 @@ export class ShoppingCartService {
   constructor(
     private log: NGXLogger,
     private http: HttpClient,
-    @Inject(APP_CONFIG) private config: AppConfig
+    @Inject(APP_CONFIG) config: AppConfig,
+    private traceProvider: WebTracerProvider,
+    private traceUtil: TraceUtilService
   ) {
-    this.log.info('constructor(): config.apiEndpoint = ', config.apiEndpoint);
-
     this.cartServiceUrl = config.apiEndpoint + ShoppingCartService.CART_ENDPOINT;
     this.log.info('constructor(): this.cartServiceUrl = ', this.cartServiceUrl);
   }
 
-  public getShoppingCart(shoppingCartId: string): Observable<BE_ShoppingCart> {
+  public getShoppingCart(shoppingCartId: string, parentSpan: Span): Observable<BE_ShoppingCart> {
     this.log.info('getShoppingCart(): requesting shopping cart with id = ', shoppingCartId);
 
+    const tracer = this.traceProvider.getTracer('frontend');
+
+    const link: api.Link = {
+      context: parentSpan.context()
+    }
+
+    // see https://github.com/open-telemetry/opentelemetry-js/blob/bf99144ad4e4fa38120e896d70e9e5bcfaf27054/packages/opentelemetry-tracing/test/export/InMemorySpanExporter.test.ts#L64-L70
+    const span = tracer.startSpan('getShoppingCart', { links: [ link ]}, api.setSpan(api.context.active(), parentSpan));
+
+    const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
+
     return this.http.get<BE_ShoppingCart>(
-      this.cartServiceUrl + '/' + shoppingCartId
+      this.cartServiceUrl + '/' + shoppingCartId,
+      {
+        headers: {
+          'uber-trace-id': jaegerTraceHeader
+        }
+      }
     )
     .pipe(
-      tap((val) => {
-        this.log.info('getShoppingCart(): returnVal = ', val);
-      }),
+      tap(
+        (val) => {
+          this.log.info('getShoppingCart(): returnVal = ', val);
+
+          span.addEvent('shoppingCart', {
+            length: val.items.length,
+            shoppingCartId: val.shoppingCartId,
+          });
+        },
+        (err) => {
+          span.recordException(err);
+        },
+        () => {
+          span.end();
+        }
+      ),
       publishReplay(1, 2000),
       refCount(),
     );

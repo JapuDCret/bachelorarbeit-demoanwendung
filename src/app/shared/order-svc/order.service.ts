@@ -76,10 +76,8 @@ export class OrderService {
   constructor(
     private log: NGXLogger,
     private http: HttpClient,
-    @Inject(APP_CONFIG) private config: AppConfig
+    @Inject(APP_CONFIG) config: AppConfig
   ) {
-    this.log.info('constructor(): config.apiEndpoint = ', config.apiEndpoint);
-
     this.orderServiceUrl = config.apiEndpoint + OrderService.ORDER_ENDPOINT;
     this.log.info('constructor(): this.orderServiceUrl = ', this.orderServiceUrl);
   }

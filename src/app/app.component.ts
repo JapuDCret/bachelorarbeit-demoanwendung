@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 
 import { NGXLogger } from 'ngx-logger';
 
-import { SplunkLoggingMonitor } from './splunk-logging-monitor/splunk-logging-monitor';
+import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
+import { SplunkLoggingMonitor } from 'src/app/splunk-logging-monitor/splunk-logging-monitor';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent {
   constructor(
     private log: NGXLogger,
     private splunkMonitor: SplunkLoggingMonitor,
+    @Inject(APP_CONFIG) config: AppConfig
   ) {
     log.registerMonitor(splunkMonitor);
   }

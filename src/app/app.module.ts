@@ -21,9 +21,12 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+
 import { AppComponent } from 'src/app/app.component';
 import { AppConfigModule } from 'src/app/app-config-module';
 import { AppRoutingModule } from 'src/app/app-routing.module';
+import { AppTracingModule } from 'src/app/app-tracing.module';
 import { BillingAddressComponent } from 'src/app/billing-address/billing-address.component';
 import { CheckoutComponent } from 'src/app/checkout/checkout.component';
 import { ErrorDialogComponent } from 'src/app/error-dialog/error-dialog.component';
@@ -32,7 +35,6 @@ import { PaymentDataComponent } from 'src/app/payment-data/payment-data.componen
 import { ReceiptPageComponent } from 'src/app/receipt-page/receipt-page.component';
 import { ShippingDataComponent } from 'src/app/shipping-data/shipping-data.component';
 import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.component';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
   ],
   imports: [
     BrowserModule,
+    AppConfigModule,
     AppRoutingModule,
+    AppTracingModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -69,8 +73,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
     MatSortModule,
     MatStepperModule,
     MatTableModule,
-    OverlayModule,
-    AppConfigModule,
+    OverlayModule
   ],
   providers: [],
   bootstrap: [AppComponent]

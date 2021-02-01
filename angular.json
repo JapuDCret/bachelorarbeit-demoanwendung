@@ -27,7 +27,17 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@opentelemetry/web",
+              "@opentelemetry/core",
+              "@opentelemetry/tracing",
+              "@opentelemetry/api",
+              "@opentelemetry/exporter-collector",
+              "@opentelemetry/context-base",
+              "@opentelemetry/propagator-jaeger",
+              "@opentelemetry/propagator-b3"
+            ]
           },
           "configurations": {
             "production": {

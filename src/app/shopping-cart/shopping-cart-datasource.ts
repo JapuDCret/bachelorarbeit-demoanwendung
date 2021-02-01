@@ -6,6 +6,9 @@ import { map, tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
+const opentelemetry = require('@opentelemetry/api');
+import { WebTracerProvider } from '@opentelemetry/web';
+
 import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
 import { LocalizationService } from 'src/app/shared/localization-svc/localization.service';
 import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
@@ -46,7 +49,8 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
     private log: NGXLogger,
     private cartService: ShoppingCartService,
     private localizationService: LocalizationService,
-    private errorHandler: SplunkForwardingErrorHandler
+    private errorHandler: SplunkForwardingErrorHandler,
+    private traceProvider: WebTracerProvider
   ) {
     super();
   }
@@ -67,10 +71,14 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
       return this.mappedShoppingCart$;
     }
 
+    const tracer = opentelemetry.trace.getTracer('frontend');
+
+    const span = tracer.startSpan("getAndMapShoppingCart");
+
     this.log.debug('getAndMapShoppingCart(): requesting translations');
     const translations$ = this.localizationService.getTranslations();
     this.log.debug('getAndMapShoppingCart(): requesting shoppingCart');
-    const shoppingCart$ = this.cartService.getShoppingCart(shoppingCartId);
+    const shoppingCart$ = this.cartService.getShoppingCart(shoppingCartId, span);
 
     this.mappedShoppingCart$ = combineLatest([translations$, shoppingCart$])
       .pipe(
@@ -84,6 +92,13 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
             this.log.warn('getAndMapShoppingCart(): err = ', err);
             
             this.errorHandler.handleError(err, { component: 'ShoppingCartDataSource' });
+
+            span.recordException(err);
+          },
+          () => {
+            if(span.isRecording()) {
+              span.end();
+            }
           }
         ),
         map(([translations, shoppingCart]) => {

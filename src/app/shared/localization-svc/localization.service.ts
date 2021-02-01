@@ -26,10 +26,8 @@ export class LocalizationService {
   constructor(
     private log: NGXLogger,
     private http: HttpClient,
-    @Inject(APP_CONFIG) private config: AppConfig
+    @Inject(APP_CONFIG) config: AppConfig
   ) {
-    this.log.info('constructor(): config.apiEndpoint = ', config.apiEndpoint);
-
     this.localizationServiceUrl = config.apiEndpoint + LocalizationService.LOCALIZATION_ENDPOINT;
     this.log.info('constructor(): this.localizationServiceUrl = ', this.localizationServiceUrl);
   }
