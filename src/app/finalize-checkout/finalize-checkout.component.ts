@@ -10,7 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { NGXLogger } from 'ngx-logger';
 
-import { OrderService, Receipt } from 'src/app/shared/order-svc/order.service';
+import { WebTracerProvider } from '@opentelemetry/web';
+
+import { Order, OrderService, Receipt } from 'src/app/shared/order-svc/order.service';
 import { CheckoutData } from 'src/app/checkout/checkout.component';
 import { ErrorDialogComponent } from 'src/app/error-dialog/error-dialog.component';
 import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
@@ -45,7 +47,8 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private cartDataSource: ShoppingCartDataSource,
     private orderService: OrderService,
-    private errorHandler: SplunkForwardingErrorHandler
+    private errorHandler: SplunkForwardingErrorHandler,
+    private traceProvider: WebTracerProvider
   ) { }
 
   ngOnInit() {
@@ -84,8 +87,18 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
     this.log.info('submit()');
 
     this.loading = true;
+    
+    const tracer = this.traceProvider.getTracer('frontend');
+    const span = tracer.startSpan(
+      'FinalizeCheckoutComponent.submit',
+      {
+        attributes: {
+          'sessionId': window.customer.sessionId
+        }
+      }
+    );
 
-    this.orderService.order({
+    const order: Order = {
       shoppingCartId: this.checkoutData.shoppingCartInfo.shoppingCartId,
       billingAddress: this.checkoutData.billingAddress,
       shippingData: this.checkoutData.shippingData,
@@ -101,7 +114,9 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
           gueltigBisJahr: padNumber(this.checkoutData.paymentData.kreditkartenData.gueltigBisJahr, 2)
         }
       },
-    })
+    };
+
+    this.orderService.order(order, span)
       .subscribe(
         (receipt) => {
           this.log.info('submit(): receipt = ', receipt);
@@ -117,6 +132,9 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
 
           this.loading = false;
 
+          span.recordException({ code: err.status, name: err.name, message: err.message });
+          span.end();
+
           this.dialog.open(ErrorDialogComponent, {
             data: {
               action: 'Bestellung ausführen',
@@ -124,6 +142,9 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
               message: err.message,
             },
           });
+        },
+        () => {
+          span.end();
         }
       );
   }

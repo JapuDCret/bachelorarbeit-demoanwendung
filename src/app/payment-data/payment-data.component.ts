@@ -5,6 +5,8 @@ import { MatStepper } from '@angular/material/stepper';
 
 import { NGXLogger } from 'ngx-logger';
 
+import { WebTracerProvider } from '@opentelemetry/web';
+
 export interface CheckoutPaymentData {
   paymentOption: 'Rechnung' | 'Überweisung' | 'PayPal' | 'Kreditkarte';
   rechnungData: {},
@@ -76,7 +78,8 @@ export class PaymentDataComponent {
 
   constructor(
     private log: NGXLogger,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private traceProvider: WebTracerProvider
   ) {
     const paymentOptionsControl = this.paymentDataFormGroup.get('paymentOptions');
     paymentOptionsControl.valueChanges.subscribe(
@@ -141,12 +144,24 @@ export class PaymentDataComponent {
     // this.log.info('submit(): checkoutPaymentData = ', checkoutPaymentData);
 
     this.loading = true;
+    
+    const tracer = this.traceProvider.getTracer('frontend');
+    const span = tracer.startSpan(
+      'PaymentDataComponent.submit',
+      {
+        attributes: {
+          'sessionId': window.customer.sessionId
+        }
+      }
+    );
 
     window.frontendModel.paymentData = checkoutPaymentData;
     this.submitted.emit(checkoutPaymentData);
 
     window.setTimeout(() => {
       this.loading = false;
+
+      span.end();
 
       this.stepper.next();
     }, 250);

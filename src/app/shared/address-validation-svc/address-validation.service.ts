@@ -41,17 +41,18 @@ export class AddressValidationService {
     this.log.info('constructor(): this.addressValidationServiceUrl = ', this.addressValidationServiceUrl);
   }
 
-  public validateAddress(address: Address): Observable<void> {
+  public validateAddress(address: Address, parentSpan?: api.Span): Observable<void> {
     this.log.info('validateAddress(): validating address, data = ', address);
     
     const tracer = this.traceProvider.getTracer('frontend');
     const span = tracer.startSpan(
-      'validateAddress',
+      'AddressValidationService.validateAddress',
       {
         attributes: {
           'sessionId': window.customer.sessionId
         }
-      }
+      },
+      parentSpan && api.setSpan(api.context.active(), parentSpan)
     );
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
@@ -72,8 +73,8 @@ export class AddressValidationService {
           },
           (err) => {
             this.errorHandler.handleError(err, { component: 'AddressValidationService' });
-  
-            span.recordException(err);
+
+            span.recordException({ code: err.status, name: err.name, message: err.message });
           },
           () => {
             span.end();

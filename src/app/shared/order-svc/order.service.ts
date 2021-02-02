@@ -92,17 +92,18 @@ export class OrderService {
 
   private lastResponse: Observable<Receipt>;
 
-  public order(order: Order): Observable<Receipt> {
+  public order(order: Order, parentSpan?: api.Span): Observable<Receipt> {
     this.log.info('order(): placing order, data = ', order);
     
     const tracer = this.traceProvider.getTracer('frontend');
     const span = tracer.startSpan(
-      'order',
+      'OrderService.order',
       {
         attributes: {
           'sessionId': window.customer.sessionId
         }
-      }
+      },
+      parentSpan && api.setSpan(api.context.active(), parentSpan)
     );
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
@@ -124,7 +125,7 @@ export class OrderService {
         (err) => {
           this.errorHandler.handleError(err, { component: 'OrderService' });
 
-          span.recordException(err);
+          span.recordException({ code: err.status, name: err.name, message: err.message });
         },
         () => {
           span.end();

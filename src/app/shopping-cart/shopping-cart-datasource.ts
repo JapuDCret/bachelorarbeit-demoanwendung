@@ -72,7 +72,14 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
 
     const tracer = this.traceProvider.getTracer('frontend');
 
-    const span = tracer.startSpan('getAndMapShoppingCart', {});
+    const span = tracer.startSpan(
+      'ShoppingCartDataSource.getAndMapShoppingCart',
+      {
+        attributes: {
+          'sessionId': window.customer.sessionId
+        }
+      },
+    );
 
     this.log.debug('getAndMapShoppingCart(): requesting translations');
     const translations$ = this.localizationService.getTranslations();

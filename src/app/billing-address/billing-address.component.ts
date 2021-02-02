@@ -5,6 +5,8 @@ import { MatStepper } from '@angular/material/stepper';
 
 import { NGXLogger } from 'ngx-logger';
 
+import { WebTracerProvider } from '@opentelemetry/web';
+
 import { AddressValidationService } from 'src/app/shared/address-validation-svc/address-validation.service';
 import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
 
@@ -51,7 +53,8 @@ export class BillingAddressComponent {
     private log: NGXLogger,
     private fb: FormBuilder,
     private addressValidationService: AddressValidationService,
-    private errorHandler: SplunkForwardingErrorHandler
+    private errorHandler: SplunkForwardingErrorHandler,
+    private traceProvider: WebTracerProvider
   ) { }
 
   goBack(): void {
@@ -90,9 +93,19 @@ export class BillingAddressComponent {
 
     this.loading = true;
     
+    const tracer = this.traceProvider.getTracer('frontend');
+    const span = tracer.startSpan(
+      'BillingAddressComponent.submit',
+      {
+        attributes: {
+          'sessionId': window.customer.sessionId
+        }
+      }
+    );
+    
     window.frontendModel.billingAddress = checkoutBillingAddress;
 
-    this.addressValidationService.validateAddress({ ...checkoutBillingAddress })
+    this.addressValidationService.validateAddress({ ...checkoutBillingAddress }, span)
       .subscribe(
         res => {
           this.log.info('validateAddress.subscribe(): res = ', res);
@@ -135,7 +148,12 @@ export class BillingAddressComponent {
           err.error = null;
           this.errorHandler.handleError(err, { component: 'BillingAddressComponent', addressValidationResult: this.addressValidationResult });
 
+          span.recordException({ name: 'Validation failed', message: this.addressValidationResult });
+
           this.billingAddressFormGroup.updateValueAndValidity();
+        },
+        () => {
+          span.end();
         }
       );
 

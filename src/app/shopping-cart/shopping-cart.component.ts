@@ -10,6 +10,8 @@ import { delay, mergeMap, reduce, tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
+import { WebTracerProvider } from '@opentelemetry/web';
+
 import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
 import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
 
@@ -44,7 +46,8 @@ export class ShoppingCartComponent implements AfterViewInit {
   constructor(
     private log: NGXLogger,
     private fb: FormBuilder,
-    private dataSource: ShoppingCartDataSource
+    private dataSource: ShoppingCartDataSource,
+    private traceProvider: WebTracerProvider
   ) { }
 
   ngAfterViewInit() {
@@ -84,6 +87,16 @@ export class ShoppingCartComponent implements AfterViewInit {
     this.log.info('submit()');
 
     this.loading = true;
+    
+    const tracer = this.traceProvider.getTracer('frontend');
+    const span = tracer.startSpan(
+      'ShoppingCartComponent.submit',
+      {
+        attributes: {
+          'sessionId': window.customer.sessionId
+        }
+      }
+    );
 
     const shoppingCartInfo = {
       shoppingCartId: window.customer.sessionId,
@@ -96,6 +109,8 @@ export class ShoppingCartComponent implements AfterViewInit {
 
     window.setTimeout(() => {
       this.loading = false;
+
+      span.end();
 
       this.stepper.next();
     }, 2000 * this.itemCount);

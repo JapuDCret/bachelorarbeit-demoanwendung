@@ -40,17 +40,18 @@ export class LocalizationService {
     this.log.info('constructor(): this.localizationServiceUrl = ', this.localizationServiceUrl);
   }
 
-  public getTranslations(): Observable<Localization> {
+  public getTranslations(parentSpan?: api.Span): Observable<Localization> {
     this.log.info('getTranslations(): requesting translations');
     
     const tracer = this.traceProvider.getTracer('frontend');
     const span = tracer.startSpan(
-      'getTranslations',
+      'LocalizationService.getTranslations',
       {
         attributes: {
           'sessionId': window.customer.sessionId
         }
-      }
+      },
+      parentSpan && api.setSpan(api.context.active(), parentSpan)
     );
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
@@ -70,8 +71,8 @@ export class LocalizationService {
           },
           (err) => {
             this.errorHandler.handleError(err, { component: 'LocalizationService' });
-  
-            span.recordException(err);
+
+            span.recordException({ code: err.status, name: err.name, message: err.message });
           },
           () => {
             span.end();
