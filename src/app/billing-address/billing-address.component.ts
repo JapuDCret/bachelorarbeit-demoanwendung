@@ -5,7 +5,7 @@ import { MatStepper } from '@angular/material/stepper';
 
 import { NGXLogger } from 'ngx-logger';
 
-import { WebTracerProvider } from '@opentelemetry/web';
+import { Tracer } from '@opentelemetry/tracing';
 
 import { AddressValidationService } from 'src/app/shared/address-validation-svc/address-validation.service';
 import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
@@ -54,7 +54,7 @@ export class BillingAddressComponent {
     private fb: FormBuilder,
     private addressValidationService: AddressValidationService,
     private errorHandler: SplunkForwardingErrorHandler,
-    private traceProvider: WebTracerProvider
+    private tracer: Tracer
   ) { }
 
   goBack(): void {
@@ -93,8 +93,7 @@ export class BillingAddressComponent {
 
     this.loading = true;
     
-    const tracer = this.traceProvider.getTracer('frontend');
-    const span = tracer.startSpan(
+    const span = this.tracer.startSpan(
       'BillingAddressComponent.submit',
       {
         attributes: {

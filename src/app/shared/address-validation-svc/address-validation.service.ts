@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
 import * as api from '@opentelemetry/api';
-import { WebTracerProvider } from '@opentelemetry/web';
+import { Tracer } from '@opentelemetry/tracing';
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 import { TraceUtilService } from 'src/app/shared/trace-util/trace-util.service';
@@ -34,7 +34,7 @@ export class AddressValidationService {
     private http: HttpClient,
     @Inject(APP_CONFIG) config: AppConfig,
     private errorHandler: SplunkForwardingErrorHandler,
-    private traceProvider: WebTracerProvider,
+    private tracer: Tracer,
     private traceUtil: TraceUtilService
   ) {
     this.addressValidationServiceUrl = config.apiEndpoint + AddressValidationService.ADDRESSVALIDATION_ENDPOINT;
@@ -44,8 +44,7 @@ export class AddressValidationService {
   public validateAddress(address: Address, parentSpan?: api.Span): Observable<void> {
     this.log.info('validateAddress(): validating address, data = ', address);
     
-    const tracer = this.traceProvider.getTracer('frontend');
-    const span = tracer.startSpan(
+    const span = this.tracer.startSpan(
       'AddressValidationService.validateAddress',
       {
         attributes: {

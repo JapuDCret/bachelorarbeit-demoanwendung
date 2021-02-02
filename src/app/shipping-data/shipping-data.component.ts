@@ -7,7 +7,7 @@ import { MatStepper } from '@angular/material/stepper';
 
 import { NGXLogger } from 'ngx-logger';
 
-import { WebTracerProvider } from '@opentelemetry/web';
+import { Tracer } from '@opentelemetry/tracing';
 
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
 
@@ -52,7 +52,7 @@ export class ShippingDataComponent implements OnChanges {
   constructor(
     private log: NGXLogger,
     private fb: FormBuilder,
-    private traceProvider: WebTracerProvider
+    private tracer: Tracer
   ) {
     const useBillingAddressControl = this.useBillingAddressFormGroup.get('useBillingAddress');
     useBillingAddressControl.valueChanges.subscribe(
@@ -161,8 +161,7 @@ export class ShippingDataComponent implements OnChanges {
 
     this.loading = true;
     
-    const tracer = this.traceProvider.getTracer('frontend');
-    const span = tracer.startSpan(
+    const span = this.tracer.startSpan(
       'ShippingDataComponent.submit',
       {
         attributes: {

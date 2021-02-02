@@ -7,7 +7,7 @@ import { publishReplay, refCount, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
 import * as api from '@opentelemetry/api';
-import { WebTracerProvider } from '@opentelemetry/web';
+import { Tracer } from '@opentelemetry/tracing';
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 import { TraceUtilService } from 'src/app/shared/trace-util/trace-util.service';
@@ -39,7 +39,7 @@ export class ShoppingCartService {
     private http: HttpClient,
     @Inject(APP_CONFIG) config: AppConfig,
     private errorHandler: SplunkForwardingErrorHandler,
-    private traceProvider: WebTracerProvider,
+    private tracer: Tracer,
     private traceUtil: TraceUtilService
   ) {
     this.cartServiceUrl = config.apiEndpoint + ShoppingCartService.CART_ENDPOINT;
@@ -49,10 +49,8 @@ export class ShoppingCartService {
   public getShoppingCart(shoppingCartId: string, parentSpan?: api.Span): Observable<BE_ShoppingCart> {
     this.log.info('getShoppingCart(): requesting shopping cart with id = ', shoppingCartId);
 
-    const tracer = this.traceProvider.getTracer('frontend');
-
     // see https://github.com/open-telemetry/opentelemetry-js/blob/bf99144ad4e4fa38120e896d70e9e5bcfaf27054/packages/opentelemetry-tracing/test/export/InMemorySpanExporter.test.ts#L64-L70
-    const span = tracer.startSpan(
+    const span = this.tracer.startSpan(
       'ShoppingCartService.getShoppingCart',
       {
         attributes: {

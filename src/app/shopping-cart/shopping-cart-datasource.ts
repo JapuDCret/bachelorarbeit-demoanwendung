@@ -6,7 +6,7 @@ import { map, tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
-import { WebTracerProvider } from '@opentelemetry/web';
+import { Tracer } from '@opentelemetry/tracing';
 
 import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
 import { LocalizationService } from 'src/app/shared/localization-svc/localization.service';
@@ -49,7 +49,7 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
     private cartService: ShoppingCartService,
     private localizationService: LocalizationService,
     private errorHandler: SplunkForwardingErrorHandler,
-    private traceProvider: WebTracerProvider
+    private tracer: Tracer
   ) {
     super();
   }
@@ -70,9 +70,7 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
       return this.mappedShoppingCart$;
     }
 
-    const tracer = this.traceProvider.getTracer('frontend');
-
-    const span = tracer.startSpan(
+    const span = this.tracer.startSpan(
       'ShoppingCartDataSource.getAndMapShoppingCart',
       {
         attributes: {

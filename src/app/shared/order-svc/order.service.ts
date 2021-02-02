@@ -7,7 +7,7 @@ import { publishReplay, refCount, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
 import * as api from '@opentelemetry/api';
-import { WebTracerProvider } from '@opentelemetry/web';
+import { Tracer } from '@opentelemetry/tracing';
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 import { TraceUtilService } from 'src/app/shared/trace-util/trace-util.service';
@@ -83,7 +83,7 @@ export class OrderService {
     private http: HttpClient,
     @Inject(APP_CONFIG) config: AppConfig,
     private errorHandler: SplunkForwardingErrorHandler,
-    private traceProvider: WebTracerProvider,
+    private tracer: Tracer,
     private traceUtil: TraceUtilService
   ) {
     this.orderServiceUrl = config.apiEndpoint + OrderService.ORDER_ENDPOINT;
@@ -95,8 +95,7 @@ export class OrderService {
   public order(order: Order, parentSpan?: api.Span): Observable<Receipt> {
     this.log.info('order(): placing order, data = ', order);
     
-    const tracer = this.traceProvider.getTracer('frontend');
-    const span = tracer.startSpan(
+    const span = this.tracer.startSpan(
       'OrderService.order',
       {
         attributes: {

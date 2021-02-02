@@ -26,7 +26,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { AppComponent } from 'src/app/app.component';
 import { AppConfigModule } from 'src/app/app-config-module';
 import { AppRoutingModule } from 'src/app/app-routing.module';
-import { AppTracingModule } from 'src/app/app-tracing.module';
+import { AppObservabilityModule } from 'src/app/app-observability.module';
 import { BillingAddressComponent } from 'src/app/billing-address/billing-address.component';
 import { CheckoutComponent } from 'src/app/checkout/checkout.component';
 import { ErrorDialogComponent } from 'src/app/error-dialog/error-dialog.component';
@@ -52,7 +52,7 @@ import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.compo
     BrowserModule,
     AppConfigModule,
     AppRoutingModule,
-    AppTracingModule,
+    AppObservabilityModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,

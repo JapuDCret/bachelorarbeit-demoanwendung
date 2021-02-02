@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { NGXLogger } from 'ngx-logger';
 
-import { WebTracerProvider } from '@opentelemetry/web';
+import { Tracer } from '@opentelemetry/tracing';
 
 import { Order, OrderService, Receipt } from 'src/app/shared/order-svc/order.service';
 import { CheckoutData } from 'src/app/checkout/checkout.component';
@@ -48,7 +48,7 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
     private cartDataSource: ShoppingCartDataSource,
     private orderService: OrderService,
     private errorHandler: SplunkForwardingErrorHandler,
-    private traceProvider: WebTracerProvider
+    private tracer: Tracer
   ) { }
 
   ngOnInit() {
@@ -88,8 +88,7 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
 
     this.loading = true;
     
-    const tracer = this.traceProvider.getTracer('frontend');
-    const span = tracer.startSpan(
+    const span = this.tracer.startSpan(
       'FinalizeCheckoutComponent.submit',
       {
         attributes: {
