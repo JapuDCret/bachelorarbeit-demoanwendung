@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { publishReplay, refCount, tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
@@ -121,16 +121,18 @@ export class OrderService {
       tap(
         (val) => {
           this.log.info('order(): returnVal = ', val);
+
+          span.end();
         },
         (err) => {
           this.errorHandler.handleError(err, { component: 'OrderService' });
 
           span.recordException({ code: err.status, name: err.name, message: err.message });
-        },
-        () => {
           span.end();
         }
-      )
+      ),
+      publishReplay(1, 2000),
+      refCount(),
     );
 
     return this.lastResponse;

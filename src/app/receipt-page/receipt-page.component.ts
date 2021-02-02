@@ -24,10 +24,10 @@ export class ReceiptPageComponent implements OnInit, AfterViewInit {
     ) { }
 
   ngOnInit(): void {
+    this.receipt$ = this.orderService.getLastResponse();
   }
 
   ngAfterViewInit() {
-    this.receipt$ = this.orderService.getLastResponse();
   }
 
   goToTheShop(): void {

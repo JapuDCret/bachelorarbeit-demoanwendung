@@ -112,6 +112,8 @@ export class BillingAddressComponent {
 
           this.loading = false;
 
+          span.end();
+
           this.submitted.emit(checkoutBillingAddress);
 
           this.stepper.next();
@@ -149,11 +151,9 @@ export class BillingAddressComponent {
           this.errorHandler.handleError(err, { component: 'BillingAddressComponent', addressValidationResult: this.addressValidationResult });
 
           span.recordException({ name: 'Validation failed', message: this.addressValidationResult });
+          span.end();
 
           this.billingAddressFormGroup.updateValueAndValidity();
-        },
-        () => {
-          span.end();
         }
       );
 

@@ -68,13 +68,13 @@ export class LocalizationService {
         tap(
           (val) => {
             this.log.info('getTranslations(): returnVal = ', val);
+            
+            span.end();
           },
           (err) => {
             this.errorHandler.handleError(err, { component: 'LocalizationService' });
 
             span.recordException({ code: err.status, name: err.name, message: err.message });
-          },
-          () => {
             span.end();
           }
         ),

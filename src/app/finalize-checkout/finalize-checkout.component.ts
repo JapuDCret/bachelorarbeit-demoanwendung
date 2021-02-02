@@ -122,6 +122,8 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
           this.log.info('submit(): receipt = ', receipt);
 
           this.loading = false;
+          
+          span.end();
 
           this.receipt.emit(receipt);
         },
@@ -142,9 +144,6 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
               message: err.message,
             },
           });
-        },
-        () => {
-          span.end();
         }
       );
   }

@@ -70,13 +70,13 @@ export class AddressValidationService {
         tap(
           (val) => {
             this.log.info('validateAddress(): returnVal = ', val);
+
+            span.end();
           },
           (err) => {
             this.errorHandler.handleError(err, { component: 'AddressValidationService' });
 
             span.recordException({ code: err.status, name: err.name, message: err.message });
-          },
-          () => {
             span.end();
           }
         )

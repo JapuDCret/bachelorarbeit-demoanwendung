@@ -81,13 +81,12 @@ export class ShoppingCartService {
             length: val.items.length,
             shoppingCartId: val.shoppingCartId,
           });
+          span.end();
         },
         (err) => {
           this.errorHandler.handleError(err, { component: 'ShoppingCartService' });
 
           span.recordException(err);
-        },
-        () => {
           span.end();
         }
       ),
