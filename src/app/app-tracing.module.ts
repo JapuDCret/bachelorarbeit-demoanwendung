@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { BatchSpanProcessor } from '@opentelemetry/tracing';
+import { BatchSpanProcessor, ReadableSpan, SpanExporter } from '@opentelemetry/tracing';
 import { WebTracerProvider } from '@opentelemetry/web';
-import { JaegerHttpTracePropagator } from '@opentelemetry/propagator-jaeger';
 import { ZoneContextManager } from '@opentelemetry/context-zone-peer-dep';
 
 import { CollectorTraceExporter } from '@opentelemetry/exporter-collector';
@@ -11,6 +10,7 @@ import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/b
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 import { NGXLogger } from 'ngx-logger';
+import { ExportResult } from '@opentelemetry/core';
 
 const TRACE_ENDPOINT = '/data/trace';
 
@@ -23,10 +23,30 @@ const providerFactory = (log: NGXLogger, config: AppConfig) => {
     url: traceServiceUrl,
     headers: {
     },
-    serviceName: 'frontend',
+    serviceName: 'frontend'
   };
 
-  const exporter = new CollectorTraceExporter(traceCollectorOptions);
+  class CustomTraceExporter implements SpanExporter {
+    private traceExporter: CollectorTraceExporter;
+
+    constructor(traceCollectorOptions) {
+      this.traceExporter = new CollectorTraceExporter(traceCollectorOptions);
+    }
+
+    export(spans: ReadableSpan[], resultCallback: (result: ExportResult) => void): void {
+      for(var i=0; i < spans.length; i++) {
+        spans[i].attributes['currentTime'] = new Date().getTime();
+      }
+
+      return this.traceExporter.export(spans, resultCallback);
+    }
+
+    shutdown(): Promise<void> {
+      return this.traceExporter.shutdown();
+    }
+  }
+
+  const exporter = new CustomTraceExporter(traceCollectorOptions);
 
   // Minimum required setup - supports only synchronous operations
   const provider = new WebTracerProvider({
@@ -41,12 +61,10 @@ const providerFactory = (log: NGXLogger, config: AppConfig) => {
     // send spans as soon as we have this many
     bufferSize: 10,
     // send spans if we have buffered spans older than this
-    bufferTimeout: 500,
+    bufferTimeout: 500
   }));
 
   provider.register({
-    // Use Jaeger propagator
-    propagator: new JaegerHttpTracePropagator(),
     contextManager: new ZoneContextManager()
   })
 

@@ -6,7 +6,12 @@ import { tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
+import * as api from '@opentelemetry/api';
+import { WebTracerProvider } from '@opentelemetry/web';
+
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
+import { TraceUtilService } from 'src/app/shared/trace-util/trace-util.service';
+import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
 
 export interface Order {
   shoppingCartId: string;
@@ -76,7 +81,10 @@ export class OrderService {
   constructor(
     private log: NGXLogger,
     private http: HttpClient,
-    @Inject(APP_CONFIG) config: AppConfig
+    @Inject(APP_CONFIG) config: AppConfig,
+    private errorHandler: SplunkForwardingErrorHandler,
+    private traceProvider: WebTracerProvider,
+    private traceUtil: TraceUtilService
   ) {
     this.orderServiceUrl = config.apiEndpoint + OrderService.ORDER_ENDPOINT;
     this.log.info('constructor(): this.orderServiceUrl = ', this.orderServiceUrl);
@@ -86,15 +94,42 @@ export class OrderService {
 
   public order(order: Order): Observable<Receipt> {
     this.log.info('order(): placing order, data = ', order);
+    
+    const tracer = this.traceProvider.getTracer('frontend');
+    const span = tracer.startSpan(
+      'order',
+      {
+        attributes: {
+          'sessionId': window.customer.sessionId
+        }
+      }
+    );
+
+    const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
 
     this.lastResponse = this.http.post<Receipt>(
       this.orderServiceUrl,
-      order
+      order,
+      {
+        headers: {
+          'uber-trace-id': jaegerTraceHeader
+        }
+      }
     )
     .pipe(
-      tap((val) => {
-        this.log.info('order(): returnVal = ', val);
-      })
+      tap(
+        (val) => {
+          this.log.info('order(): returnVal = ', val);
+        },
+        (err) => {
+          this.errorHandler.handleError(err, { component: 'OrderService' });
+
+          span.recordException(err);
+        },
+        () => {
+          span.end();
+        }
+      )
     );
 
     return this.lastResponse;

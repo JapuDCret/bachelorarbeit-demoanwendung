@@ -6,7 +6,6 @@ import { map, tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
-const opentelemetry = require('@opentelemetry/api');
 import { WebTracerProvider } from '@opentelemetry/web';
 
 import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
@@ -71,9 +70,9 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
       return this.mappedShoppingCart$;
     }
 
-    const tracer = opentelemetry.trace.getTracer('frontend');
+    const tracer = this.traceProvider.getTracer('frontend');
 
-    const span = tracer.startSpan("getAndMapShoppingCart");
+    const span = tracer.startSpan('getAndMapShoppingCart', {});
 
     this.log.debug('getAndMapShoppingCart(): requesting translations');
     const translations$ = this.localizationService.getTranslations();
@@ -105,7 +104,7 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
           const mappedCartItems = shoppingCart && shoppingCart.items && shoppingCart.items.map((val) => {
             const imagePath = IMAGE_MAPPING[val.id];
 
-            const name = translations ? translations["de"][val.translationKey] : `***${val.translationKey}***`;
+            const name = translations ? translations['de'][val.translationKey] : `***${val.translationKey}***`;
 
             return { ...val, imagePath, name }
           });

@@ -23,7 +23,6 @@
     "@angular/router": "~11.0.0",
     "@opentelemetry/context-zone-peer-dep": "^0.15.0",
     "@opentelemetry/exporter-collector": "^0.15.0",
-    "@opentelemetry/propagator-jaeger": "^0.12.1",
     "@opentelemetry/web": "^0.15.0",
     "ngx-logger": "^4.1.9",
     "rxjs": "~6.6.0",
