@@ -8,6 +8,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import * as api from '@opentelemetry/api';
 import { Tracer } from '@opentelemetry/tracing';
+import { CounterMetric } from '@opentelemetry/metrics';
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 import { TraceUtilService } from 'src/app/shared/trace-util/trace-util.service';
@@ -35,7 +36,8 @@ export class AddressValidationService {
     @Inject(APP_CONFIG) config: AppConfig,
     private errorHandler: SplunkForwardingErrorHandler,
     private tracer: Tracer,
-    private traceUtil: TraceUtilService
+    private traceUtil: TraceUtilService,
+    private requestCounter: CounterMetric
   ) {
     this.addressValidationServiceUrl = config.apiEndpoint + AddressValidationService.ADDRESSVALIDATION_ENDPOINT;
     this.log.info('constructor(): this.addressValidationServiceUrl = ', this.addressValidationServiceUrl);
@@ -48,13 +50,15 @@ export class AddressValidationService {
       'AddressValidationService.validateAddress',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       },
       parentSpan && api.setSpan(api.context.active(), parentSpan)
     );
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
+
+    this.requestCounter.add(1, { 'component': 'AddressValidationService' });
 
     return this.http.post<void>(
       this.addressValidationServiceUrl,

@@ -1,51 +1,30 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ExportResult } from '@opentelemetry/core';
-import { BatchSpanProcessor, ReadableSpan, SpanExporter, Tracer } from '@opentelemetry/tracing';
-import { WebTracerProvider } from '@opentelemetry/web';
-import { Meter, MeterProvider } from '@opentelemetry/metrics';
-
-import { CollectorMetricExporter, CollectorTraceExporter } from '@opentelemetry/exporter-collector';
-import { CollectorExporterConfigBase } from '@opentelemetry/exporter-collector/build/src/types';
-
-import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 import { NGXLogger } from 'ngx-logger';
 
+import { BatchSpanProcessor, Tracer } from '@opentelemetry/tracing';
+import { WebTracerProvider } from '@opentelemetry/web';
+import { CounterMetric, Meter, MeterProvider } from '@opentelemetry/metrics';
+
+import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
+import { SplunkForwardingService } from 'src/app/shared/splunk-forwarding-svc/splunk-forwarding.service';
+import { CustomTraceExporter } from 'src/app/observability/custom-trace-exporter';
+import { CustomMetricExporter } from 'src/app/observability/custom-metric-exporter';
+
 const TRACE_ENDPOINT = '/data/trace';
-const METER_ENDPOINT = '/data/meter';
 
 const tracingProviderFactory = (log: NGXLogger, config: AppConfig) => {
   const traceServiceUrl = config.apiEndpoint + TRACE_ENDPOINT;
   
   log.info('tracingProviderFactory(): traceServiceUrl = ', traceServiceUrl);
 
-  const traceCollectorOptions: CollectorExporterConfigBase = {
+  const traceCollectorOptions = {
     url: traceServiceUrl,
     headers: {
     },
     serviceName: 'frontend'
   };
-
-  class CustomTraceExporter implements SpanExporter {
-    private traceExporter: CollectorTraceExporter;
-
-    constructor(traceCollectorOptions) {
-      this.traceExporter = new CollectorTraceExporter(traceCollectorOptions);
-    }
-
-    export(spans: ReadableSpan[], resultCallback: (result: ExportResult) => void): void {
-      for(var i=0; i < spans.length; i++) {
-        spans[i].attributes['currentTime'] = new Date().getTime();
-      }
-
-      return this.traceExporter.export(spans, resultCallback);
-    }
-
-    shutdown(): Promise<void> {
-      return this.traceExporter.shutdown();
-    }
-  }
 
   const exporter = new CustomTraceExporter(traceCollectorOptions);
 
@@ -57,7 +36,6 @@ const tracingProviderFactory = (log: NGXLogger, config: AppConfig) => {
     ],
   });
   
-  // provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
   provider.addSpanProcessor(new BatchSpanProcessor(exporter, {
     // send spans as soon as we have this many
     bufferSize: 10,
@@ -65,34 +43,34 @@ const tracingProviderFactory = (log: NGXLogger, config: AppConfig) => {
     bufferTimeout: 500
   }));
 
-  // provider.register({
-  //   contextManager: new ZoneContextManager()
-  // })
-
   return provider.getTracer('frontend');
 };
 
-const meterProviderFactory = (log: NGXLogger, config: AppConfig) => {
-  const meterServiceUrl = config.apiEndpoint + METER_ENDPOINT;
+const meterProviderFactory = (splunkForwardingSvc: SplunkForwardingService) => {
+  // const meterServiceUrl = config.apiEndpoint + METER_ENDPOINT;
   
-  log.info('meterProviderFactory(): meterServiceUrl = ', meterServiceUrl);
+  // log.info('meterProviderFactory(): meterServiceUrl = ', meterServiceUrl);
 
-  const metricCollectorOptions: CollectorExporterConfigBase = {
-    url: meterServiceUrl,
-    headers: {
-    },
-    serviceName: 'frontend'
-  };
+  // const metricCollectorOptions: CollectorExporterConfigBase = {
+  //   url: meterServiceUrl,
+  //   headers: {
+  //   },
+  //   serviceName: 'frontend'
+  // };
 
-  const exporter = new CollectorMetricExporter(metricCollectorOptions);
+  const exporter = new CustomMetricExporter(splunkForwardingSvc);
   
   // Register the exporter
   const provider = new MeterProvider({
     exporter,
-    interval: 60000,
+    interval: 10000,
   });
 
   return provider.getMeter('frontend');
+};
+
+const requestCountMetric = (meter: Meter): CounterMetric => {
+  return meter.createCounter('requestCount') as CounterMetric;
 };
 
 
@@ -110,8 +88,13 @@ const meterProviderFactory = (log: NGXLogger, config: AppConfig) => {
     {
       provide: Meter,
       useFactory: meterProviderFactory,
-      deps: [ NGXLogger, APP_CONFIG ]
-    }
+      deps: [ SplunkForwardingService ]
+    },
+    {
+      provide: CounterMetric,
+      useFactory: requestCountMetric,
+      deps: [ Meter ]
+    },
   ]
 })
 export class AppObservabilityModule {

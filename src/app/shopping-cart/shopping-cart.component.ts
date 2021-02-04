@@ -11,6 +11,8 @@ import { delay, mergeMap, reduce, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
 import { Tracer } from '@opentelemetry/tracing';
+import { Meter } from '@opentelemetry/metrics';
+import { BoundValueRecorder } from '@opentelemetry/api-metrics';
 
 import { ShoppingCartDataSource } from 'src/app/shopping-cart/shopping-cart-datasource';
 import { ShoppingCartItem } from 'src/app/shopping-cart/shopping-cart-datasource';
@@ -41,14 +43,24 @@ export class ShoppingCartComponent implements AfterViewInit {
   @Output() submitted = new EventEmitter<CheckoutShoppingCartInfo>();
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['imagePath', 'amount', 'name', 'price'];
+  readonly displayedColumns = ['imagePath', 'amount', 'name', 'price'];
+
+  readonly totalSumRecorder: BoundValueRecorder;
+  readonly itemCountRecorder: BoundValueRecorder;
 
   constructor(
     private log: NGXLogger,
     private fb: FormBuilder,
     private dataSource: ShoppingCartDataSource,
-    private tracer: Tracer
-  ) { }
+    private tracer: Tracer,
+    private meter: Meter
+  ) {
+    const totalSumRecorderUnbound = this.meter.createValueRecorder('totalSum', {  });
+    this.totalSumRecorder = totalSumRecorderUnbound.bind({ component: 'ShoppingCartComponent' });
+    
+    const itemCountRecorderUnbound = this.meter.createValueRecorder('itemCount', {  });
+    this.itemCountRecorder = itemCountRecorderUnbound.bind({ component: 'ShoppingCartComponent' });
+  }
 
   ngAfterViewInit() {
     this.table.dataSource = this.dataSource;
@@ -92,16 +104,18 @@ export class ShoppingCartComponent implements AfterViewInit {
       'ShoppingCartComponent.submit',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       }
     );
-
     const shoppingCartInfo = {
-      shoppingCartId: window.customer.sessionId,
+      shoppingCartId: window.customer.shoppingCartId,
       totalSum: this.totalSum,
       itemCount: this.itemCount,
     }
+    
+    this.totalSumRecorder.record(this.totalSum);
+    this.itemCountRecorder.record(this.itemCount);
 
     window.frontendModel.shoppingCartInfo = shoppingCartInfo;
     this.submitted.emit(shoppingCartInfo);

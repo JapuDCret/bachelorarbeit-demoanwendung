@@ -8,6 +8,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import * as api from '@opentelemetry/api';
 import { Tracer } from '@opentelemetry/tracing';
+import { CounterMetric } from '@opentelemetry/metrics';
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 import { TraceUtilService } from 'src/app/shared/trace-util/trace-util.service';
@@ -40,7 +41,8 @@ export class ShoppingCartService {
     @Inject(APP_CONFIG) config: AppConfig,
     private errorHandler: SplunkForwardingErrorHandler,
     private tracer: Tracer,
-    private traceUtil: TraceUtilService
+    private traceUtil: TraceUtilService,
+    private requestCounter: CounterMetric
   ) {
     this.cartServiceUrl = config.apiEndpoint + ShoppingCartService.CART_ENDPOINT;
     this.log.info('constructor(): this.cartServiceUrl = ', this.cartServiceUrl);
@@ -54,13 +56,15 @@ export class ShoppingCartService {
       'ShoppingCartService.getShoppingCart',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       },
       parentSpan && api.setSpan(api.context.active(), parentSpan)
     );
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
+
+    this.requestCounter.add(1, { 'component': 'ShoppingCartService' });
 
     return this.http.get<BE_ShoppingCart>(
       this.cartServiceUrl + '/' + shoppingCartId,

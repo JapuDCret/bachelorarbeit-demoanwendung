@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 
-import { NGXLogger } from 'ngx-logger';
 import { interval } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
@@ -46,7 +45,6 @@ export class SplunkForwardingService {
   private batchQueue: SplunkEntry[];
 
   constructor(
-    private log: NGXLogger,
     private http: HttpClient,
     @Inject(APP_CONFIG) private config: AppConfig
   ) {
@@ -71,24 +69,29 @@ export class SplunkForwardingService {
   }
 
   /**
-   * The entry will be supplemented with the source, the environment, the current path, the sessionId and the logRocketSessionURL
+   * The entry will be supplemented with the source, the environment, the current path, the shoppingCartId and the logRocketSessionURL
    * 
    * @param entry 
    */
   public forwardEvent(entry: SplunkEntry): void {
-    entry.source = 'frontend';
-    entry.event.environment = this.config.environment;
-    entry.event.path = window.location.href;
+    this.forwardEvents([entry]);
+  }
 
-    entry.event.sessionId = window.customer.sessionId;
+  public forwardEvents(entries: SplunkEntry[]): void {
+    for(const entry of entries) {
+      entry.source = 'frontend';
+      entry.event.environment = this.config.environment;
+      entry.event.path = window.location.href;
 
-    entry.event.logRocketSessionURL = window.logrocketData.sessionURL;
-    
-    // do not use the logger here, or a it'll trigger a recursion
-    console.log('SplunkForwardingService.forwardEvent(): adding entry to queue, entry = ', entry);
+      entry.event.shoppingCartId = window.customer.shoppingCartId;
 
-    this.batchQueue.push(entry);
-    // this.http.post<void>(this.logServiceUrl, entry).subscribe();
+      entry.event.logRocketSessionURL = window.logrocketData.sessionURL;
+      
+      // do not use the logger here, or a it'll trigger a recursion
+      console.log('SplunkForwardingService.forwardEvent(): adding entry to queue, entry = ', entry);
+
+      this.batchQueue.push(entry);
+    }
   }
 
   private sendBatch(batch: SplunkEntry[]): void {

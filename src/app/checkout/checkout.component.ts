@@ -54,11 +54,11 @@ export class CheckoutComponent implements OnInit {
     this.paymentDataFormGroup = this.fb.group({});
     this.finalizeCheckoutFormGroup = this.fb.group({});
 
-    this.log.info('ngOnInit(): retrieving sessionId..');
+    this.log.info('ngOnInit(): retrieving shoppingCartId..');
 
-    window.customer.sessionId = generateFakeUUID();
+    window.customer.shoppingCartId = generateFakeUUID();
 
-    this.log.info('ngOnInit(): sessionId = ', window.customer.sessionId);
+    this.log.info('ngOnInit(): shoppingCartId = ', window.customer.shoppingCartId);
   }
 
   onShoppingCartSubmit(data: CheckoutShoppingCartInfo): void {

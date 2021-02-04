@@ -8,16 +8,12 @@ import { NGXLogger } from 'ngx-logger';
 
 import * as api from '@opentelemetry/api';
 import { Tracer } from '@opentelemetry/tracing';
+import { CounterMetric } from '@opentelemetry/metrics';
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 import { TraceUtilService } from 'src/app/shared/trace-util/trace-util.service';
 import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
-
-export interface Localization {
-  "de": {
-    [translationKey: string]: string;
-  }
-}
+import Localization from 'src/app/shared/localization-svc/localization';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +30,8 @@ export class LocalizationService {
     @Inject(APP_CONFIG) config: AppConfig,
     private errorHandler: SplunkForwardingErrorHandler,
     private tracer: Tracer,
-    private traceUtil: TraceUtilService
+    private traceUtil: TraceUtilService,
+    private requestCounter: CounterMetric
   ) {
     this.localizationServiceUrl = config.apiEndpoint + LocalizationService.LOCALIZATION_ENDPOINT;
     this.log.info('constructor(): this.localizationServiceUrl = ', this.localizationServiceUrl);
@@ -47,13 +44,15 @@ export class LocalizationService {
       'LocalizationService.getTranslations',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       },
       parentSpan && api.setSpan(api.context.active(), parentSpan)
     );
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
+
+    this.requestCounter.add(1, { 'component': 'LocalizationService' });
 
     return this.http.get<Localization>(
       this.localizationServiceUrl,

@@ -60,7 +60,7 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
    * @returns A stream of the items to be rendered.
    */
   connect(): Observable<ShoppingCartItem[]> {
-    return this.getAndMapShoppingCart(window.customer.sessionId);
+    return this.getAndMapShoppingCart(window.customer.shoppingCartId);
   }
 
   private mappedShoppingCart$: Observable<ShoppingCartItem[]>;
@@ -74,13 +74,13 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
       'ShoppingCartDataSource.getAndMapShoppingCart',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       },
     );
 
     this.log.debug('getAndMapShoppingCart(): requesting translations');
-    const translations$ = this.localizationService.getTranslations();
+    const translations$ = this.localizationService.getTranslations(span);
     this.log.debug('getAndMapShoppingCart(): requesting shoppingCart');
     const shoppingCart$ = this.cartService.getShoppingCart(shoppingCartId, span);
 

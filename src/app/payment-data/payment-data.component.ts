@@ -149,7 +149,7 @@ export class PaymentDataComponent {
       'PaymentDataComponent.submit',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       }
     );

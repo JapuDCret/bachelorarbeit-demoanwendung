@@ -97,7 +97,7 @@ export class BillingAddressComponent {
       'BillingAddressComponent.submit',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       }
     );

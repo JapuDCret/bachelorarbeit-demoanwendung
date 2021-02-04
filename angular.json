@@ -31,6 +31,7 @@
             "allowedCommonJsDependencies": [
               "@opentelemetry/web",
               "@opentelemetry/core",
+              "@opentelemetry/metrics",
               "@opentelemetry/tracing",
               "@opentelemetry/api",
               "@opentelemetry/exporter-collector",

@@ -92,7 +92,7 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
       'FinalizeCheckoutComponent.submit',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       }
     );

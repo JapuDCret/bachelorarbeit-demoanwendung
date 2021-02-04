@@ -11,7 +11,7 @@ import { CheckoutShoppingCartInfo } from 'src/app/shopping-cart/shopping-cart.co
 declare global {
   interface Window {
     customer: {
-      sessionId: string;
+      shoppingCartId: string;
     },
     frontendModel: {
       shoppingCartInfo: null | CheckoutShoppingCartInfo;
@@ -26,7 +26,7 @@ declare global {
 }
 
 window.customer = {
-  sessionId: 'n/a'
+  shoppingCartId: 'n/a'
 }
 window.frontendModel = {
   shoppingCartInfo: null,

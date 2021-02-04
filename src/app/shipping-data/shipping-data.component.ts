@@ -165,7 +165,7 @@ export class ShippingDataComponent implements OnChanges {
       'ShippingDataComponent.submit',
       {
         attributes: {
-          'sessionId': window.customer.sessionId
+          'shoppingCartId': window.customer.shoppingCartId
         }
       }
     );
