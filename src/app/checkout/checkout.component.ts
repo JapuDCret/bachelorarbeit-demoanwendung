@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 
 import { NGXLogger } from 'ngx-logger';
 
+import * as LogRocket from 'logrocket';
+
 import { Receipt } from 'src/app/shared/order-svc/order.service';
 import { generateFakeUUID } from 'src/app/shared/session-util/session-util';
 import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.component';
@@ -56,7 +58,15 @@ export class CheckoutComponent implements OnInit {
 
     this.log.info('ngOnInit(): retrieving shoppingCartId..');
 
-    window.customer.shoppingCartId = generateFakeUUID();
+    const shoppingCartId = generateFakeUUID();
+    window.customer.shoppingCartId = shoppingCartId;
+
+    LogRocket.init('bachelorarbeit-22hmg/bachelorarbeit', {});
+    LogRocket.startNewSession();
+    LogRocket.getSessionURL((sessionURL) => {
+      window.logrocketData.sessionURL = sessionURL;
+    });
+    LogRocket.identify(shoppingCartId);
 
     this.log.info('ngOnInit(): shoppingCartId = ', window.customer.shoppingCartId);
   }
@@ -64,11 +74,21 @@ export class CheckoutComponent implements OnInit {
   onShoppingCartSubmit(data: CheckoutShoppingCartInfo): void {
     this.log.info('onShoppingCartSubmit(): data = ', data);
 
+    LogRocket.identify(window.customer.shoppingCartId, {
+      itemCount: data.itemCount,
+      totalSum: data.totalSum
+    });
+
     this.checkoutData.shoppingCartInfo = data;
   }
 
   onBillingAddressSubmit(data: CheckoutBillingAddress): void {
     this.log.info('onBillingAddressSubmit(): data = ', data);
+
+    LogRocket.identify(window.customer.shoppingCartId, {
+      name: data.firstName + ' ' + data.lastName,
+      email: data.email
+    });
 
     this.checkoutData.billingAddress = data;
   }

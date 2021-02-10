@@ -11,7 +11,7 @@ export class AppConfig {
 
 export const APP_DI_CONFIG: AppConfig = {
   environment: environment.environment,
-  apiEndpoint: environment.apiEndpoint,
+  apiEndpoint: environment.apiEndpoint
 }
 
 @NgModule({

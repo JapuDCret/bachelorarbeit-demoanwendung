@@ -33,7 +33,7 @@ export class ReceiptPageComponent implements OnInit, AfterViewInit {
   goToTheShop(): void {
     this.log.info('goToTheShop(): navigating back to checkout');
 
-    this.router.navigate(['checkout']);
+    window.location.replace('checkout');
   }
 
 }

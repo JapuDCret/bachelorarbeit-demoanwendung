@@ -1,5 +1,7 @@
 import { ErrorHandler, Injectable, Injector } from "@angular/core";
 
+import * as LogRocket from 'logrocket';
+
 import { SplunkEntry, SplunkForwardingService } from "src/app/shared/splunk-forwarding-svc/splunk-forwarding.service";
 
 @Injectable({
@@ -24,6 +26,8 @@ export class SplunkForwardingErrorHandler extends ErrorHandler {
             console.log('SplunkForwardingErrorHandler.handleError(): mappedError is null or undefined, skipping..');
             return;
         }
+
+        LogRocket.captureException(mappedError);
 
         const entry: SplunkEntry = {
             sourcetype: 'error',

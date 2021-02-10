@@ -22,14 +22,14 @@ export interface ShoppingCartItem extends BE_ShoppingCartItem {
 }
 
 const IMAGE_MAPPING = {
-  0: '/assets/fruits/cantalope.png',
-  1: '/assets/fruits/coconut.png',
-  2: '/assets/fruits/grapes.png',
-  3: '/assets/fruits/peach.png',
-  4: '/assets/fruits/pear.png',
-  5: '/assets/fruits/pineapple.png',
-  6: '/assets/fruits/pomegranate.png',
-  7: '/assets/fruits/watermelon.png',
+  1: 'assets/fruits/cantalope.png',
+  2: 'assets/fruits/coconut.png',
+  3: 'assets/fruits/grapes.png',
+  4: 'assets/fruits/peach.png',
+  5: 'assets/fruits/pear.png',
+  6: 'assets/fruits/pineapple.png',
+  7: 'assets/fruits/pomegranate.png',
+  8: 'assets/fruits/watermelon.png',
 };
 
 /**
