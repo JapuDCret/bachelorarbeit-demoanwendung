@@ -6,12 +6,12 @@
   - User-Stories (Gherkin): https://github.com/cwansart/warenkorb-gherkin
   - Prototyp: https://cwansart.github.io/warenkorb-prototyp/
 - Backend:
-  - localization-svc: https://github.com/JapuDCret/ba-demo-localization-svc
-  - cart-svc: https://github.com/JapuDCret/ba-demo-cart-svc
-  - address-validation-svc: https://github.com/JapuDCret/ba-demo-address-validation-svc
-  - order-svc: https://github.com/JapuDCret/ba-demo-order-svc
-  - backend4frontend: https://github.com/JapuDCret/ba-demo-backend4frontend
-  - Kubernetes Settings: https://github.com/JapuDCret/ba-demo-k8s-settings
+  - localization-svc: https://github.com/JapuDCret/ba-demo-localization-svc/tree/loesung
+  - cart-svc: https://github.com/JapuDCret/ba-demo-cart-svc/tree/loesung
+  - address-validation-svc: https://github.com/JapuDCret/ba-demo-address-validation-svc/tree/loesung
+  - order-svc: https://github.com/JapuDCret/ba-demo-order-svc/tree/loesung
+  - backend4frontend: https://github.com/JapuDCret/ba-demo-backend4frontend/tree/loesung
+  - Kubernetes Settings: https://github.com/JapuDCret/ba-demo-k8s-settings/tree/loesung
 
 # Angular Generated Info
 
