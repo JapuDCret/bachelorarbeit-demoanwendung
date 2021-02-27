@@ -48,15 +48,8 @@ export class OrderService {
   public order(order: Order, parentSpan?: api.Span): Observable<Receipt> {
     this.log.info('order(): placing order, data = ', order);
     
-    const span = this.tracer.startSpan(
-      'OrderService.order',
-      {
-        attributes: {
-          'shoppingCartId': window.customer.shoppingCartId
-        }
-      },
-      parentSpan && api.setSpan(api.context.active(), parentSpan)
-    );
+    // start span with provided span as a parent
+    const span = this.traceUtil.startChildSpan(this.tracer, 'OrderService.order', parentSpan, { 'shoppingCartId': window.customer.shoppingCartId });
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
 

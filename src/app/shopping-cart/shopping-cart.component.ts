@@ -10,7 +10,6 @@ import { delay, mergeMap, reduce, tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
-import { Tracer } from '@opentelemetry/tracing';
 import { Meter } from '@opentelemetry/metrics';
 import { BoundValueRecorder } from '@opentelemetry/api-metrics';
 
@@ -52,7 +51,6 @@ export class ShoppingCartComponent implements AfterViewInit {
     private log: NGXLogger,
     private fb: FormBuilder,
     private dataSource: ShoppingCartDataSource,
-    private tracer: Tracer,
     private meter: Meter
   ) {
     const totalSumRecorderUnbound = this.meter.createValueRecorder('totalSum', {  });
@@ -99,15 +97,7 @@ export class ShoppingCartComponent implements AfterViewInit {
     this.log.info('submit()');
 
     this.loading = true;
-    
-    const span = this.tracer.startSpan(
-      'ShoppingCartComponent.submit',
-      {
-        attributes: {
-          'shoppingCartId': window.customer.shoppingCartId
-        }
-      }
-    );
+
     const shoppingCartInfo = {
       shoppingCartId: window.customer.shoppingCartId,
       totalSum: this.totalSum,
@@ -120,12 +110,8 @@ export class ShoppingCartComponent implements AfterViewInit {
     window.frontendModel.shoppingCartInfo = shoppingCartInfo;
     this.submitted.emit(shoppingCartInfo);
 
-    window.setTimeout(() => {
-      this.loading = false;
+    this.loading = false;
 
-      span.end();
-
-      this.stepper.next();
-    }, 2000 * this.itemCount);
+    this.stepper.next();
   }
 }

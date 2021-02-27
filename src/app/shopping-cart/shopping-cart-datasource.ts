@@ -2,15 +2,18 @@ import { DataSource } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
 
 import { combineLatest, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { delay, map, tap } from 'rxjs/operators';
 
 import { NGXLogger } from 'ngx-logger';
 
+import * as api from '@opentelemetry/api';
 import { Tracer } from '@opentelemetry/tracing';
 
-import { BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
+import { BE_ShoppingCart, BE_ShoppingCartItem, ShoppingCartService } from 'src/app/shared/shopping-cart-svc/shopping-cart.service';
 import { LocalizationService } from 'src/app/shared/localization-svc/localization.service';
 import { SplunkForwardingErrorHandler } from 'src/app/splunk-forwarding-error-handler/splunk-forwarding-error-handler';
+import Localization from 'src/app/shared/localization-svc/localization';
+import { TraceUtilService } from '../shared/trace-util/trace-util.service';
 
 export interface ShoppingCart {
   shoppingCartId: string;
@@ -42,14 +45,13 @@ const IMAGE_MAPPING = {
 })
 export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
 
-  readonly shoppingCartId: string;
-
   constructor(
     private log: NGXLogger,
     private cartService: ShoppingCartService,
     private localizationService: LocalizationService,
     private errorHandler: SplunkForwardingErrorHandler,
-    private tracer: Tracer
+    private tracer: Tracer,
+    private traceUtil: TraceUtilService
   ) {
     super();
   }
@@ -84,7 +86,15 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
     this.log.debug('getAndMapShoppingCart(): requesting shoppingCart');
     const shoppingCart$ = this.cartService.getShoppingCart(shoppingCartId, span);
 
-    this.mappedShoppingCart$ = combineLatest([translations$, shoppingCart$])
+    this.mappedShoppingCart$ = this.mapShoppingCart(translations$, shoppingCart$, span);
+
+    return this.mappedShoppingCart$;
+  }
+
+  private mapShoppingCart(translations$: Observable<Localization>, shoppingCart$: Observable<BE_ShoppingCart>, parentSpan: api.Span): Observable<ShoppingCartItem[]> {
+    var mappingSpan: api.Span = null;
+
+    var mappedShoppingCart$ = combineLatest([translations$, shoppingCart$])
       .pipe(
         tap(
           ([translations]) => {
@@ -97,14 +107,16 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
             
             this.errorHandler.handleError(err, { component: 'ShoppingCartDataSource' });
 
-            span.recordException(err);
+            mappingSpan.recordException(err);
+            parentSpan.recordException(err);
           },
           () => {
-            if(span.isRecording()) {
-              span.end();
-            }
+            // start span with provided span as a parent
+            mappingSpan = this.traceUtil.startChildSpan(this.tracer, 'ShoppingCartDataSource.mapShoppingCart', parentSpan, { 'shoppingCartId': window.customer.shoppingCartId });
           }
         ),
+        // simulate time-consuming mapping operation with 5s delay
+        delay(5000),
         map(([translations, shoppingCart]) => {
           const mappedCartItems = shoppingCart && shoppingCart.items && shoppingCart.items.map((val) => {
             const imagePath = IMAGE_MAPPING[val.id];
@@ -116,12 +128,24 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
 
           return mappedCartItems;
         }),
-        tap((mappedVal) => {
-          this.log.info('getAndMapShoppingCart(): mappedVal = ', mappedVal);
-        }),
+        tap(
+          (mappedVal) => {
+            this.log.info('getAndMapShoppingCart(): mappedVal = ', mappedVal);
+          },
+          (err) => {/* noop */},
+          () => {
+            if(mappingSpan != null && mappingSpan.isRecording()) {
+              mappingSpan.end();
+            }
+
+            if(parentSpan.isRecording()) {
+              parentSpan.end();
+            }
+          }
+        ),
       );
 
-    return this.mappedShoppingCart$;
+    return mappedShoppingCart$;
   }
 
   /**

@@ -61,19 +61,26 @@ export class CheckoutComponent implements OnInit {
     const shoppingCartId = generateFakeUUID();
     window.customer.shoppingCartId = shoppingCartId;
 
+    this.log.info('ngOnInit(): shoppingCartId = ', window.customer.shoppingCartId);
+  }
+
+  activateLogRocket() {
+    // initialize session recording
     LogRocket.init('bachelorarbeit-22hmg/bachelorarbeit', {});
+    // start a new session
     LogRocket.startNewSession();
+    // make sessionURL accessable
     LogRocket.getSessionURL((sessionURL) => {
       window.logrocketData.sessionURL = sessionURL;
     });
-    LogRocket.identify(shoppingCartId);
-
-    this.log.info('ngOnInit(): shoppingCartId = ', window.customer.shoppingCartId);
+    // pass unique "session"-id to LogRocket
+    LogRocket.identify(window.customer.shoppingCartId);
   }
 
   onShoppingCartSubmit(data: CheckoutShoppingCartInfo): void {
     this.log.info('onShoppingCartSubmit(): data = ', data);
 
+    // enrich LogRocket data with ShoppingCart data
     LogRocket.identify(window.customer.shoppingCartId, {
       itemCount: data.itemCount,
       totalSum: data.totalSum
@@ -85,6 +92,7 @@ export class CheckoutComponent implements OnInit {
   onBillingAddressSubmit(data: CheckoutBillingAddress): void {
     this.log.info('onBillingAddressSubmit(): data = ', data);
 
+    // enrich LogRocket data with BillingAddress data
     LogRocket.identify(window.customer.shoppingCartId, {
       name: data.firstName + ' ' + data.lastName,
       email: data.email

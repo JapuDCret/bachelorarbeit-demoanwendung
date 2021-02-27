@@ -51,16 +51,8 @@ export class ShoppingCartService {
   public getShoppingCart(shoppingCartId: string, parentSpan?: api.Span): Observable<BE_ShoppingCart> {
     this.log.info('getShoppingCart(): requesting shopping cart with id = ', shoppingCartId);
 
-    // see https://github.com/open-telemetry/opentelemetry-js/blob/bf99144ad4e4fa38120e896d70e9e5bcfaf27054/packages/opentelemetry-tracing/test/export/InMemorySpanExporter.test.ts#L64-L70
-    const span = this.tracer.startSpan(
-      'ShoppingCartService.getShoppingCart',
-      {
-        attributes: {
-          'shoppingCartId': window.customer.shoppingCartId
-        }
-      },
-      parentSpan && api.setSpan(api.context.active(), parentSpan)
-    );
+    // start span with provided span as a parent
+    const span = this.traceUtil.startChildSpan(this.tracer, 'ShoppingCartService.getShoppingCart', parentSpan, { 'shoppingCartId': window.customer.shoppingCartId });
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
 

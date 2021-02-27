@@ -46,15 +46,8 @@ export class AddressValidationService {
   public validateAddress(address: Address, parentSpan?: api.Span): Observable<void> {
     this.log.info('validateAddress(): validating address, data = ', address);
     
-    const span = this.tracer.startSpan(
-      'AddressValidationService.validateAddress',
-      {
-        attributes: {
-          'shoppingCartId': window.customer.shoppingCartId
-        }
-      },
-      parentSpan && api.setSpan(api.context.active(), parentSpan)
-    );
+    // start span with provided span as a parent
+    const span = this.traceUtil.startChildSpan(this.tracer, 'AddressValidationService.validateAddress', parentSpan, { 'shoppingCartId': window.customer.shoppingCartId });
 
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
 

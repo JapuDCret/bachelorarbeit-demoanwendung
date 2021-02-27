@@ -14,10 +14,10 @@ import { CustomMetricExporter } from 'src/app/observability/custom-metric-export
 
 const TRACE_ENDPOINT = '/data/trace';
 
-const tracingProviderFactory = (log: NGXLogger, config: AppConfig) => {
+const tracerFactory = (log: NGXLogger, config: AppConfig): Tracer => {
   const traceServiceUrl = config.apiEndpoint + TRACE_ENDPOINT;
   
-  log.info('tracingProviderFactory(): traceServiceUrl = ', traceServiceUrl);
+  log.info('tracerFactory(): traceServiceUrl = ', traceServiceUrl);
 
   const traceCollectorOptions = {
     url: traceServiceUrl,
@@ -46,18 +46,7 @@ const tracingProviderFactory = (log: NGXLogger, config: AppConfig) => {
   return provider.getTracer('frontend');
 };
 
-const meterProviderFactory = (splunkForwardingSvc: SplunkForwardingService) => {
-  // const meterServiceUrl = config.apiEndpoint + METER_ENDPOINT;
-  
-  // log.info('meterProviderFactory(): meterServiceUrl = ', meterServiceUrl);
-
-  // const metricCollectorOptions: CollectorExporterConfigBase = {
-  //   url: meterServiceUrl,
-  //   headers: {
-  //   },
-  //   serviceName: 'frontend'
-  // };
-
+const meterFactory = (splunkForwardingSvc: SplunkForwardingService): Meter => {
   const exporter = new CustomMetricExporter(splunkForwardingSvc);
   
   // Register the exporter
@@ -82,12 +71,12 @@ const requestCountMetric = (meter: Meter): CounterMetric => {
   providers: [
     {
       provide: Tracer,
-      useFactory: tracingProviderFactory,
+      useFactory: tracerFactory,
       deps: [ NGXLogger, APP_CONFIG ]
     },
     {
       provide: Meter,
-      useFactory: meterProviderFactory,
+      useFactory: meterFactory,
       deps: [ SplunkForwardingService ]
     },
     {

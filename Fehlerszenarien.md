@@ -48,9 +48,9 @@ Die Demoanwendung soll beispielhaft eine fehlerbehaftete Webanwendung darstellen
 
 ### "Lange Verarbeitung"
 
-- Problem: Beim Absenden des Formulars auf der Seite "Warenkorb" kommt es zu einer unerwünschten Wartezeit (von min. 6-10s).
+- Problem: Beim Abrufen der "Warenkorb"-Daten kommt es zu einer unerwünschten Wartezeit (von ca. 6-10s).
 
-- Ursache: Dies ist eine simulierte Wartezeit im Frontend je nach Anzahl der Positionen, um eine ineffiziente Verarbeitung nachzuahmen.
+- Ursache: Dies ist eine simulierte Wartezeit im Frontend, hierbei wird eine ineffiziente Mapping-Operation nachgeahmt.
 
 
 ## Vorschläge

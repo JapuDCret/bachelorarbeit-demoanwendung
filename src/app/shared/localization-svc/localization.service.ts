@@ -40,18 +40,13 @@ export class LocalizationService {
   public getTranslations(parentSpan?: api.Span): Observable<Localization> {
     this.log.info('getTranslations(): requesting translations');
     
-    const span = this.tracer.startSpan(
-      'LocalizationService.getTranslations',
-      {
-        attributes: {
-          'shoppingCartId': window.customer.shoppingCartId
-        }
-      },
-      parentSpan && api.setSpan(api.context.active(), parentSpan)
-    );
+    // start span with provided span as a parent
+    const span = this.traceUtil.startChildSpan(this.tracer, 'LocalizationService.getTranslations', parentSpan, { 'shoppingCartId': window.customer.shoppingCartId });
 
+    // generate a jaeger-compatible trace header from OTel span
     const jaegerTraceHeader = this.traceUtil.serializeSpanContextToJaegerHeader(span.context());
 
+    // increment the requestCounter metric
     this.requestCounter.add(1, { 'component': 'LocalizationService' });
 
     return this.http.get<Localization>(

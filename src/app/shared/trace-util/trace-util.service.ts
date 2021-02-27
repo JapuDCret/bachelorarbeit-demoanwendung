@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import * as api from '@opentelemetry/api';
+import { Tracer } from '@opentelemetry/tracing';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,18 @@ export class TraceUtilService {
     const traceFlags = `0${(spanContext.traceFlags || api.TraceFlags.NONE).toString(16)}`;
   
     return `${spanContext.traceId}:${spanContext.spanId}:0:${traceFlags}`;
+  }
+
+  public startChildSpan(tracer: Tracer, name: string, parentSpan: api.Span, attributes?: {}): api.Span {
+    // see https://github.com/open-telemetry/opentelemetry-js/blob/bf99144ad4e4fa38120e896d70e9e5bcfaf27054/packages/opentelemetry-tracing/test/export/InMemorySpanExporter.test.ts#L64-L70
+    const childSpan = tracer.startSpan(
+      name,
+      {
+        attributes: attributes,
+      },
+      parentSpan && api.setSpan(api.context.active(), parentSpan)
+    );
+
+    return childSpan;
   }
 }
