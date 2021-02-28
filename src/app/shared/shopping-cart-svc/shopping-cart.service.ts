@@ -78,9 +78,14 @@ export class ShoppingCartService {
           span.end();
         },
         (err) => {
-          this.errorHandler.handleError(err, { component: 'ShoppingCartService' });
+          const errObject = {
+            code: err.status,
+            name: err.name,
+            message: err.message
+          }
+          this.errorHandler.handleError(errObject, { component: 'ShoppingCartService', description: err.error });
 
-          span.recordException(err);
+          span.recordException(errObject);
           span.end();
         }
       ),

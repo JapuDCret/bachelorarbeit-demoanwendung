@@ -105,7 +105,12 @@ export class ShoppingCartDataSource extends DataSource<ShoppingCartItem> {
           (err) => {
             this.log.warn('getAndMapShoppingCart(): err = ', err);
             
-            this.errorHandler.handleError(err, { component: 'ShoppingCartDataSource' });
+            const errObject = {
+              code: err.status,
+              name: err.name,
+              message: err.message
+            }
+            this.errorHandler.handleError(errObject, { component: 'ShoppingCartDataSource', description: err.error });
 
             mappingSpan.recordException(err);
             parentSpan.recordException(err);

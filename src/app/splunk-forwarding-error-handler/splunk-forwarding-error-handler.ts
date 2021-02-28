@@ -1,5 +1,7 @@
 import { ErrorHandler, Injectable, Injector } from "@angular/core";
 
+import { CounterMetric, Meter } from "@opentelemetry/metrics";
+
 import * as LogRocket from 'logrocket';
 
 import { SplunkEntry, SplunkForwardingService } from "src/app/shared/splunk-forwarding-svc/splunk-forwarding.service";
@@ -8,12 +10,20 @@ import { SplunkEntry, SplunkForwardingService } from "src/app/shared/splunk-forw
     providedIn: 'root'
 })
 export class SplunkForwardingErrorHandler extends ErrorHandler {
+
     private splunkForwarding: SplunkForwardingService;
 
-    constructor(injector: Injector) {
+    private errorCountMetric: CounterMetric;
+
+    constructor(
+        injector: Injector,
+        meter: Meter
+    ) {
         super();
 
         this.splunkForwarding = injector.get(SplunkForwardingService);
+        
+        this.errorCountMetric = meter.createCounter('errorCount') as CounterMetric;
     }
 
     handleError(error, optionalData?: any): void {
@@ -26,6 +36,8 @@ export class SplunkForwardingErrorHandler extends ErrorHandler {
             console.log('SplunkForwardingErrorHandler.handleError(): mappedError is null or undefined, skipping..');
             return;
         }
+
+        this.errorCountMetric.add(1, { name:  mappedError.name });
 
         LogRocket.captureException(mappedError);
 

@@ -14,7 +14,7 @@ Die Demoanwendung soll beispielhaft eine fehlerbehaftete Webanwendung darstellen
 
 - Problem: Nutzer berichten, dass Ihr Straßenname nicht eingeben werden kann. Beispielsweise die Eingabe "Ährenweg" führt zu einem Fehler.
 
-- Ursache: Der "address-validation-svc" validiert Straßen mit dem RegEx `[a-zA-Z\,\-\ ]+`, welches keine gängigen Sonderzeichen (ä ,ö ,ü, ß) erlaubt.
+- Ursache: Der "address-validation-svc" validiert Straßen mit der Regular Expression `[a-zA-Z\,\-\ ]+`, welches keine gängigen Sonderzeichen (ä ,ö ,ü, ß) erlaubt.
 
 ### "Gültige Hausnummern sind ungültig"
 

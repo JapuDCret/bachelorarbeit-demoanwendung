@@ -129,11 +129,16 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
         err => {
           this.log.warn('submit(): err = ', err);
 
-          this.errorHandler.handleError(err, { component: 'FinalizeCheckoutComponent' });
+          const errObject = {
+            code: err.status,
+            name: err.name,
+            message: err.message
+          }
+          this.errorHandler.handleError(errObject, { component: 'FinalizeCheckoutComponent', description: err.error });
 
           this.loading = false;
 
-          span.recordException({ code: err.status, name: err.name, message: err.message });
+          span.recordException(errObject);
           span.end();
 
           this.dialog.open(ErrorDialogComponent, {

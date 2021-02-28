@@ -72,9 +72,14 @@ export class OrderService {
           span.end();
         },
         (err) => {
-          this.errorHandler.handleError(err, { component: 'OrderService' });
+          const errObject = {
+            code: err.status,
+            name: err.name,
+            message: err.message
+          }
+          this.errorHandler.handleError(errObject, { component: 'OrderService', description: err.error });
 
-          span.recordException({ code: err.status, name: err.name, message: err.message });
+          span.recordException(errObject);
           span.end();
         }
       ),

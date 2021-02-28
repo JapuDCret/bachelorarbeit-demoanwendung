@@ -65,9 +65,14 @@ export class LocalizationService {
             span.end();
           },
           (err) => {
-            this.errorHandler.handleError(err, { component: 'LocalizationService' });
+            const errObject = {
+              code: err.status,
+              name: err.name,
+              message: err.message
+            }
+            this.errorHandler.handleError(errObject, { component: 'LocalizationService', description: err.error });
 
-            span.recordException({ code: err.status, name: err.name, message: err.message });
+            span.recordException(errObject);
             span.end();
           }
         ),

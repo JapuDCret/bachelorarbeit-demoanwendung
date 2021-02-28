@@ -70,9 +70,14 @@ export class AddressValidationService {
             span.end();
           },
           (err) => {
-            this.errorHandler.handleError(err, { component: 'AddressValidationService' });
+            const errObject = {
+              code: err.status,
+              name: err.name,
+              message: err.message
+            }
+            this.errorHandler.handleError(errObject, { component: 'AddressValidationService', description: err.error });
 
-            span.recordException({ code: err.status, name: err.name, message: err.message });
+            span.recordException(errObject);
             span.end();
           }
         )
