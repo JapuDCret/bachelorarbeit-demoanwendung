@@ -7,11 +7,13 @@ export let APP_CONFIG = new InjectionToken<AppConfig>('app.config');
 export class AppConfig {
   environment: string;
   apiEndpoint: string;
+  logRocketAppId: string;
 }
 
 export const APP_DI_CONFIG: AppConfig = {
   environment: environment.environment,
-  apiEndpoint: environment.apiEndpoint
+  apiEndpoint: environment.apiEndpoint,
+  logRocketAppId: environment.logRocketAppId
 }
 
 @NgModule({

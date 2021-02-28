@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Einverständnis zur Aufnahme Ihrer Sitzung</h1>
+<div mat-dialog-content>
+    <div *ngIf="sessionRecordingAlreadyActive">
+        <p><strong>Sie haben der Aufnahme bereits zugestimmt und Ihre Sitzung wird derzeit aufgenommen.</strong></p>
+    </div>
+    <div class="consentInformation" [class.consentInformationNotNeeded]="sessionRecordingAlreadyActive">
+        <p>Möchten Sie den Entwicklern helfen, indem Ihre Sitzung aufgezeichnet wird?</p>
+        <p>Wenn Sie einverstanden mit der Aufnahme der aktuellen Sitzung sind, dann bestätigen Sie dies über den Button <strong>Akzeptieren</strong>.</p>
+        <p>Ihre Daten werden zur Verarbeitung an Server der LogRocket Inc. gesendet und dort gespeichert (1).</p>
+        <br />
+        <p class="footnote">(1) Wie LogRocket mit Ihren Daten umgeht, können Sie unter <a href="https://docs.logrocket.com/docs/security">https://docs.logrocket.com/docs/security</a> nachlesen</p>
+    </div>
+</div>
+<mat-dialog-actions class="cardActions">
+    <button mat-raised-button (click)="closeDialog()" color="primary" [disabled]="loading">
+        <mat-icon aria-hidden="false" aria-label="Symbol für 'Abbrechen'">cancel</mat-icon> Abbrechen
+    </button>
+    <button mat-raised-button (click)="activateLogRocket()" color="accent" [class.spinner]="loading" [disabled]="loading || sessionRecordingAlreadyActive">
+        <mat-icon aria-hidden="false" aria-label="Symbol für 'Akzeptieren'">check</mat-icon> Akzeptieren
+    </button>
+</mat-dialog-actions>

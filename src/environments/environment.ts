@@ -4,7 +4,8 @@
 
 export const environment = {
     environment: "development",
-    apiEndpoint: 'http://localhost:53246'
+    apiEndpoint: 'http://localhost:53246',
+    logRocketAppId: 'bachelorarbeit-22hmg/bachelorarbeit'
 };
 
 /*

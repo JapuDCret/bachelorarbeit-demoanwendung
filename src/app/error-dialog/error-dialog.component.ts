@@ -17,8 +17,7 @@ export class ErrorDialogComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ErrorData) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   goToTheShop(): void {
     window.location.reload();

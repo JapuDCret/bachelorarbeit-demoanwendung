@@ -36,4 +36,23 @@
             </div>
         </mat-card-footer>
     </mat-card>
+
+    <div class="floatingRecordConsentDialogButton">
+        <button
+            mat-fab
+            color="accent"
+            matTooltip="Aufzeichnung der Sitzung ist {{sessionRecordingActivated ? 'aktiv' : 'inaktiv'}}"
+            (click)="openRecordConsentDialog()"
+        >
+            <ng-container
+                *ngIf="sessionRecordingActivated; then sessionRecordingActiveIcon; else sessionRecordingNotActiveIcon">
+            </ng-container>
+            <ng-template #sessionRecordingActiveIcon>
+                <mat-icon>videocam</mat-icon>
+            </ng-template>
+            <ng-template #sessionRecordingNotActiveIcon>
+                <mat-icon>videocam_off</mat-icon>
+            </ng-template>
+        </button>
+    </div>
 </div>

@@ -137,11 +137,12 @@ export class FinalizeCheckoutComponent implements OnInit, AfterViewInit {
           span.end();
 
           this.dialog.open(ErrorDialogComponent, {
+            id: 'finalizeCheckoutErrorDialog',
             data: {
               action: 'Bestellung ausführen',
               error: err.error,
               message: err.message,
-            },
+            }
           });
         }
       );

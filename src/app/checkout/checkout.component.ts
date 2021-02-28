@@ -1,8 +1,10 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Router } from '@angular/router';
+
+import { MatDialog } from '@angular/material/dialog';
 
 import { NGXLogger } from 'ngx-logger';
 
@@ -14,6 +16,7 @@ import { CheckoutBillingAddress } from 'src/app/billing-address/billing-address.
 import { CheckoutShoppingCartInfo } from 'src/app/shopping-cart/shopping-cart.component';
 import { CheckoutShippingData } from 'src/app/shipping-data/shipping-data.component';
 import { CheckoutPaymentData } from 'src/app/payment-data/payment-data.component';
+import { RecordConsentDialogComponent } from 'src/app/record-consent-dialog/record-consent-dialog.component';
 
 export interface CheckoutData {
   shoppingCartInfo: null | CheckoutShoppingCartInfo,
@@ -43,10 +46,13 @@ export class CheckoutComponent implements OnInit {
 
   receiptData: Receipt = null;
 
+  sessionRecordingActivated: boolean = false;
+
   constructor(
     private log: NGXLogger,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -64,17 +70,12 @@ export class CheckoutComponent implements OnInit {
     this.log.info('ngOnInit(): shoppingCartId = ', window.customer.shoppingCartId);
   }
 
-  activateLogRocket() {
-    // initialize session recording
-    LogRocket.init('bachelorarbeit-22hmg/bachelorarbeit', {});
-    // start a new session
-    LogRocket.startNewSession();
-    // make sessionURL accessable
-    LogRocket.getSessionURL((sessionURL) => {
-      window.logrocketData.sessionURL = sessionURL;
-    });
-    // pass unique "session"-id to LogRocket
-    LogRocket.identify(window.customer.shoppingCartId);
+  openRecordConsentDialog(): void {
+    const dialogRef = this.dialog.open(RecordConsentDialogComponent, { id: 'recordConsentDialog', disableClose: true });
+
+    dialogRef.afterClosed().subscribe(sessionURL => {
+      this.sessionRecordingActivated = sessionURL != 'n/a';
+    })
   }
 
   onShoppingCartSubmit(data: CheckoutShoppingCartInfo): void {

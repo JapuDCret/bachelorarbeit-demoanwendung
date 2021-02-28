@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -20,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
@@ -33,6 +35,7 @@ import { ErrorDialogComponent } from 'src/app/error-dialog/error-dialog.componen
 import { FinalizeCheckoutComponent } from 'src/app/finalize-checkout/finalize-checkout.component';
 import { PaymentDataComponent } from 'src/app/payment-data/payment-data.component';
 import { ReceiptPageComponent } from 'src/app/receipt-page/receipt-page.component';
+import { RecordConsentDialogComponent } from 'src/app/record-consent-dialog/record-consent-dialog.component';
 import { ShippingDataComponent } from 'src/app/shipping-data/shipping-data.component';
 import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.component';
 
@@ -45,6 +48,7 @@ import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.compo
     FinalizeCheckoutComponent,
     PaymentDataComponent,
     ReceiptPageComponent,
+    RecordConsentDialogComponent,
     ShippingDataComponent,
     ShoppingCartComponent,
   ],
@@ -65,6 +69,7 @@ import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.compo
     MatCardModule,
     MatCheckboxModule,
     MatDialogModule,
+    MatIconModule,
     MatInputModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
@@ -73,6 +78,7 @@ import { ShoppingCartComponent } from 'src/app/shopping-cart/shopping-cart.compo
     MatSortModule,
     MatStepperModule,
     MatTableModule,
+    MatTooltipModule,
     OverlayModule
   ],
   providers: [],

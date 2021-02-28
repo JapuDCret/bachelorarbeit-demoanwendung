@@ -1,0 +1,15 @@
+.footnote {
+    font-size: smaller;    
+}
+
+.cardActions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.consentInformation {}
+
+.consentInformationNotNeeded > p {
+    color: #888888;
+}
