@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 
-import { interval } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
+import { interval, Observable, of } from 'rxjs';
+import { takeWhile, retryWhen, delay, take } from 'rxjs/operators';
 
 import { AppConfig, APP_CONFIG } from 'src/app/app-config-module';
 
@@ -57,6 +57,7 @@ export class SplunkForwardingService {
     this.batchProcessRunning = true;
     this.batchQueue = [];
 
+    // check every 5s if there's data to forward
     interval(5000)
       .pipe(takeWhile(() => this.batchProcessRunning))
       .subscribe(() => {
@@ -64,7 +65,12 @@ export class SplunkForwardingService {
 
         this.batchQueue = [];
 
-        this.sendBatch(batch);
+        this.sendBatch(batch)
+          .pipe(
+            // retry 5 times with a delay of 15s
+            retryWhen(errors => errors.pipe(delay(15000), take(5)))
+          )
+          .subscribe();
       });
   }
 
@@ -94,10 +100,14 @@ export class SplunkForwardingService {
     }
   }
 
-  private sendBatch(batch: SplunkEntry[]): void {
+  private sendBatch(batch: SplunkEntry[]): Observable<void> {
     if(batch.length > 0) {
       console.log('SplunkForwardingService.sendBatch(): sending ' + batch.length + ' entries to batch endpoint');
-      this.http.post<void>(this.logBatchServiceUrl, batch).subscribe();
+      
+      return this.http.post<void>(this.logBatchServiceUrl, batch);
     }
+
+    // return empty Observable
+    return of<void>();
   }
 }
