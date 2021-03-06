@@ -19,9 +19,7 @@ export class RecordConsentDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<RecordConsentDialogComponent>,
     @Inject(APP_CONFIG) private config: AppConfig
-  ) {
-    console.log('RecordConsentDialogComponent.constructor(): hello');
-  }
+  ) { }
 
   ngOnInit(): void {
     console.log('RecordConsentDialogComponent.ngOnInit(): initializing..');

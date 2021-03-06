@@ -12,6 +12,7 @@
   - order-svc: https://github.com/JapuDCret/ba-demo-order-svc/tree/loesung
   - backend4frontend: https://github.com/JapuDCret/ba-demo-backend4frontend/tree/loesung
   - Kubernetes Settings: https://github.com/JapuDCret/ba-demo-k8s-settings/tree/loesung
+  - System Configuration: https://github.com/JapuDCret/ba-demo-system-configuration
 
 # Angular Generated Info
 
